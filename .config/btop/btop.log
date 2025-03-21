@@ -1,0 +1,43 @@
+
+2025/03/21 (11:21:48) | ===> btop++ v.1.4.0
+2025/03/21 (11:21:48) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+
+2025/03/21 (11:28:22) | ===> btop++ v.1.4.0
+2025/03/21 (11:28:22) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2025/03/21 (11:28:43) | INFO: Logger set to INFO
+2025/03/21 (11:28:44) | INFO: Logger set to DEBUG
+2025/03/21 (11:29:45) | DEBUG: Writing new config file
+2025/03/21 (11:29:45) | INFO: Quitting! Runtime: 00:01:25
+
+2025/03/21 (11:31:17) | ===> btop++ v.1.4.0
+2025/03/21 (11:31:17) | INFO: Logger set to DEBUG
+2025/03/21 (11:31:17) | DEBUG: Using locale en_US.UTF-8
+2025/03/21 (11:31:17) | INFO: Running on /dev/pts/1
+2025/03/21 (11:31:19) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2025/03/21 (11:31:19) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/03/21 (11:31:19) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/03/21 (11:31:19) | DEBUG: Shared::init() : Initialized.
+2025/03/21 (11:31:19) | DEBUG: Loading theme file: /usr/local/share/btop/themes/HotPurpleTrafficLight.theme
+2025/03/21 (11:31:29) | DEBUG: Loading theme file: /usr/local/share/btop/themes/HotPurpleTrafficLight.theme
+2025/03/21 (11:31:37) | DEBUG: Loading theme file: /usr/local/share/btop/themes/HotPurpleTrafficLight.theme
+2025/03/21 (11:31:38) | DEBUG: Loading theme file: /usr/local/share/btop/themes/HotPurpleTrafficLight.theme
+2025/03/21 (11:31:39) | DEBUG: Loading theme file: /usr/local/share/btop/themes/HotPurpleTrafficLight.theme
+2025/03/21 (11:31:42) | INFO: Logger set to INFO
+
+2025/03/21 (11:32:24) | ===> btop++ v.1.4.0
+2025/03/21 (11:32:24) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2025/03/21 (11:32:57) | INFO: Logger set to INFO
+2025/03/21 (11:32:57) | INFO: Logger set to DEBUG
+2025/03/21 (11:33:04) | DEBUG: Writing new config file
+2025/03/21 (11:33:04) | INFO: Quitting! Runtime: 00:00:42
+
+2025/03/21 (11:34:30) | ===> btop++ v.1.4.0
+2025/03/21 (11:34:30) | INFO: Logger set to DEBUG
+2025/03/21 (11:34:30) | DEBUG: Using locale en_US.UTF-8
+2025/03/21 (11:34:30) | INFO: Running on /dev/pts/1
+2025/03/21 (11:34:33) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2025/03/21 (11:34:33) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.6: cannot open shared object file: No such file or directory
+2025/03/21 (11:34:33) | DEBUG: Failed to find Intel GPU sysfs path, Intel GPUs will not be detected
+2025/03/21 (11:34:33) | DEBUG: Shared::init() : Initialized.
+2025/03/21 (11:34:33) | DEBUG: Loading theme file: /usr/local/share/btop/themes/HotPurpleTrafficLight.theme
+2025/03/21 (11:34:42) | INFO: Quitting! Runtime: 00:00:12
