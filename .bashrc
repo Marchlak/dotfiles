@@ -140,6 +140,8 @@ fi
 export $(grep -v '^#' ~/.env | xargs)
 eval "$(zoxide init bash)"
 
+eval "$(starship init bash)"
+
 export FZF_CTRL_T_OPTS="
   --walker-skip .git,node_modules,target
   --preview 'bat -n --color=always {}'

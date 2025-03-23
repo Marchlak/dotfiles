@@ -1,0 +1,172 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+[](color_blue)\
+$os\
+$username\
+[](bg:color_mauve fg:color_blue)\
+$directory\
+[](fg:color_mauve bg:color_aqua)\
+$git_branch\
+$git_status\
+[](fg:color_aqua bg:color_yellow)\
+$c\
+$rust\
+$golang\
+$nodejs\
+$php\
+$java\
+$kotlin\
+$haskell\
+$python\
+[](fg:color_yellow bg:color_bg3)\
+$docker_context\
+$conda\
+[](fg:color_bg3 bg:color_bg1)\
+$time\
+[](fg:color_bg1)\
+$line_break$character"""
+
+palette = 'catppuccin_mocha'
+
+[palettes.catppuccin_mocha]
+color_fg0     = "#D9E0EE"   # jasny kolor tekstu
+color_bg1     = "#1E1E2E"   # bardzo ciemne tło
+color_bg3     = "#313244"   # tło modułów (ciemny akcent)
+color_mauve   = "#C6A0F6"   # typowy akcent Catppuccin – mauve
+color_yellow  = "#EED49F"   # nasycone żółte
+color_aqua    = "#81C8BE"   # stonowany akcent teal
+color_blue    = "#8AADF4"   # wyrazisty niebieski
+color_red     = "#ED8796"   # czerwień
+color_green   = "#A6D189"   # zieleń
+color_lavender= "#B4BEFE"   # delikatny fiolet
+
+[os]
+disabled = false
+style = "bg:color_blue fg:color_fg0"
+
+[os.symbols]
+Windows           = "󰍲"
+Ubuntu            = "󰕈"
+SUSE              = ""
+Raspbian          = "󰐿"
+Mint              = "󰣭"
+Macos             = "󰀵"
+Manjaro           = ""
+Linux             = "󰌽"
+Gentoo            = "󰣨"
+Fedora            = "󰣛"
+Alpine            = ""
+Amazon            = ""
+Android           = ""
+Arch              = "󰣇"
+Artix             = "󰣇"
+EndeavourOS       = ""
+CentOS            = ""
+Debian            = "󰣚"
+Redhat            = "󱄛"
+RedHatEnterprise  = "󱄛"
+Pop               = ""
+
+[username]
+show_always = true
+style_user  = "bg:color_blue fg:color_bg1"
+style_root  = "bg:color_blue fg:color_bg1"
+format = '[ $user ]($style)'
+
+[directory]
+style = "bg:color_mauve fg:color_bg1"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music"     = "󰝚 "
+"Pictures"  = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:color_aqua"
+format = '[[ $symbol $branch ](fg:color_bg1 bg:color_aqua)]($style)'
+
+[git_status]
+style = "bg:color_aqua"
+format = '[[($all_status$ahead_behind )](fg:color_bg1 bg:color_aqua)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[c]
+symbol = " "
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[php]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[java]
+symbol = ""
+# Zmieniono tło na żółte
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[python]
+symbol = ""
+style = "bg:color_yellow"
+format = '[[ $symbol ( $version )](fg:color_bg1 bg:color_yellow)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:color_bg3"
+format = '[[ $symbol ( $context )](fg:#83a598 bg:color_bg3)]($style)'
+
+[conda]
+style = "bg:color_bg3"
+format = '[[ $symbol ( $environment )](fg:#83a598 bg:color_bg3)]($style)'
+ignore_base = false
+
+[time]
+disabled = false
+time_format = "%R"
+# Zegar pozostaje przezroczysty – tylko kolor tekstu
+style = "fg:color_fg0"
+format = '[[  $time ](fg:color_fg0)]($style)'
+
+[line_break]
+disabled = false
+
+[character]
+disabled = false
+success_symbol = '[](bold fg:color_green)'
+error_symbol   = '[](bold fg:color_red)'
+vimcmd_symbol  = '[](bold fg:color_green)'
+vimcmd_replace_one_symbol = '[](bold fg:color_purple)'
+vimcmd_replace_symbol       = '[](bold fg:color_purple)'
+vimcmd_visual_symbol        = '[](bold fg:color_mauve)'
