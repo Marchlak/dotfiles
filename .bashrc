@@ -112,16 +112,16 @@ function yaz() {
 	rm -f -- "$tmp"
 }
 
-if [ -z "$JAVA_HOME" ]; then
-  JAVA_PATH=$(readlink -f "$(which java)")
-  if [ -n "$JAVA_PATH" ]; then
-    JAVA_HOME=$(dirname "$(dirname "$JAVA_PATH")")
-    if [[ "$JAVA_HOME" == */jre ]]; then
-      JAVA_HOME=${JAVA_HOME%/jre}
-    fi
-    export JAVA_HOME
-  fi
-fi
+# if [ -z "$JAVA_HOME" ]; then
+#   JAVA_PATH=$(readlink -f "$(which java)")
+#   if [ -n "$JAVA_PATH" ]; then
+#     JAVA_HOME=$(dirname "$(dirname "$JAVA_PATH")")
+#     if [[ "$JAVA_HOME" == */jre ]]; then
+#       JAVA_HOME=${JAVA_HOME%/jre}
+#     fi
+#     export JAVA_HOME
+#   fi
+# fi
 
 # Set up fzf key bindings and fuzzy completion
 eval "$(fzf --bash)"
