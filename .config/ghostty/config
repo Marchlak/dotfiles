@@ -1,0 +1,42 @@
+theme = catppuccin-mocha
+#theme = VibrantInk
+font-family = JetBrains Mono Nerd Font
+font-size = 12
+
+keybind = ctrl+shift+up=resize_split:up,10
+keybind = ctrl+shift+equal=equalize_splits
+keybind = ctrl+shift+left=resize_split:left,10
+keybind = ctrl+shift+down=resize_split:down,10
+keybind = ctrl+shift+right=resize_split:right,10
+keybind = ctrl+shift+right_bracket=goto_split:next
+keybind = ctrl+shift+left_bracket=goto_split:previous
+
+clipboard-paste-protection = false
+custom-shader-animation = true
+#custom-shader = ~/.config/ghostty/shaders/cineShader-Lava.glsl
+#custom-shader = ~/.config/ghostty/shaders/bettercrt.glsl
+custom-shader = ~/.config/ghostty/shaders/gears-and-belts.glsl
+#custom-shader = ~/.config/ghostty/shaders/inside-the-matrix.glsl
+#custom-shader = ~/.config/ghostty/shaders/sparks-from-fire.glsl
+#custom-shader = ~/.config/ghostty/shaders/starfield.glsl
+#custom-shader = ~/.config/ghostty/shaders/underwater.glsl
+
+keybind = ctrl+kp_page_up=previous_tab
+keybind = ctrl+kp_page_down=next_tab
+
+keybind = shift+kp_page_up=scroll_page_up
+keybind = shift+kp_page_down=scroll_page_down
+keybind = ctrl+w=close_surface
+
+keybind = ctrl+alt+page_up=jump_to_prompt:-1
+keybind = ctrl+alt+page_down=jump_to_prompt:1
+
+gtk-single-instance = true
+
+window-theme = ghostty
+gtk-wide-tabs = false
+window-decoration = false
+
+#cursor-color = "#FF00FF"
+cursor-invert-fg-bg = true
+
