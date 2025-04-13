@@ -162,3 +162,7 @@ alias l='lsd -CF'
 alias fzfb='fzf --preview "bat --color=always --style=numbers --line-range=:500 {}"'
 alias nvimf='nvim $(fzf -m --preview "bat --color=always --style=numbers --line-range=:500 {}")'
 alias cd="z"
+alias wifilist='nmcli device wifi list'
+wificon() {
+  nmcli device wifi connect "$1" password "$2"
+}
