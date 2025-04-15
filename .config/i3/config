@@ -14,9 +14,8 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-set $disp1 "HDMI-A-0"
-set $disp2 "DisplayPort-1"
-set $disp3 "DVI-D-0"
+set $disp1 "eDP"
+set $disp2 "HDMI-1-0"
 
 include ~/.config/i3/config.d/*.conf
 
