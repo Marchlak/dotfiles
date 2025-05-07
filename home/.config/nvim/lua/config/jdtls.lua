@@ -133,6 +133,23 @@ local function setup_jdtls()
         pattern = { "*.java" },
         callback = function() pcall(vim.lsp.codelens.refresh) end
       })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "java",
+  callback = function()
+    local original_copen = vim.cmd.copen
+    vim.cmd.copen = function(...)
+      local key = vim.fn.getchar(0)
+      if key == 0 then
+        -- ignorujemy automatyczne otwarcia
+        return
+      else
+        return original_copen(...)
+      end
+    end
+  end
+})
+    
     end
   }
   require("jdtls").start_or_attach(config)

@@ -1,0 +1,21 @@
+let mapleader=" "
+nnoremap <leader>ff :action GotoFile<CR>
+nnoremap <leader>fg :action GotoSymbol<CR>
+nnoremap <leader>fb :action RecentFiles<CR>
+nnoremap <leader>gd :action GotoDeclaration<CR>
+nnoremap <leader>gi :action GotoImplementation<CR>
+nnoremap <leader>gD :action GotoTypeDeclaration<CR>
+nnoremap <leader>kk :action QuickDocumentation<CR>
+nnoremap <leader>gu :action FindUsages<CR>
+nnoremap <leader>gr :action RenameElement<CR>
+nnoremap <leader>gc :action CommentByLineComment<CR>
+nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
+nnoremap <leader>mb :action CompileProject<CR>
+nnoremap <leader>mr :action ReformatCode<CR>
+nnoremap <leader>qq :action CloseActiveTab<CR>
+map <leader>u :action FindUsages<CR>
+map <leader>p :action ShowUsages<CR>
+set clipboard=unnamedplus
+nmap <leader>aa ggVG
+set scrolloff=8
+
