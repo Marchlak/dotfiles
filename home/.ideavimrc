@@ -18,4 +18,4 @@ map <leader>p :action ShowUsages<CR>
 set clipboard=unnamedplus
 nmap <leader>aa ggVG
 set scrolloff=8
-
+xnoremap <leader>gc :action CommentByLineComment<CR>
