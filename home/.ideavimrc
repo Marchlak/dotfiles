@@ -1,6 +1,7 @@
 let mapleader=" "
 nnoremap <leader>ff :action GotoFile<CR>
 nnoremap <leader>fg :action GotoSymbol<CR>
+nnoremap <leader>fc :action GotoClass<CR>
 nnoremap <leader>fb :action RecentFiles<CR>
 nnoremap <leader>gd :action GotoDeclaration<CR>
 nnoremap <leader>gi :action GotoImplementation<CR>
@@ -19,3 +20,5 @@ set clipboard=unnamedplus
 nmap <leader>aa ggVG
 set scrolloff=8
 xnoremap <leader>gc :action CommentByLineComment<CR>
+nnoremap <leader><S-Tab> :action Forward<CR>
+nnoremap <leader><Tab> :action Back<CR>
