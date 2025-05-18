@@ -166,3 +166,5 @@ alias wifilist='nmcli device wifi list'
 wificon() {
   nmcli device wifi connect "$1" password "$2"
 }
+export AWS_PROFILE=optima-sim-scenarios
+cgpt(){ find . -type f -name "*.$1" -exec cat {} + | xclip -selection clipboard; }

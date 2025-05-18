@@ -22,3 +22,8 @@ set scrolloff=8
 xnoremap <leader>gc :action CommentByLineComment<CR>
 nnoremap <leader><S-Tab> :action Forward<CR>
 nnoremap <leader><Tab> :action Back<CR>
+nnoremap <C-f> :action Find<CR>
+xnoremap <C-f> :action Find<CR>
+nnoremap <C-r> :action Replace<CR>
+xnoremap <C-r> :action Replace<CR>
+

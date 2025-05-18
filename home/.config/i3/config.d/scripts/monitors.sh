@@ -3,3 +3,4 @@
 # xrandr --output DisplayPort-1 --mode 1920x1080 --pos 1920x0
 # xrandr --output DVI-D-0 --mode 1920x1080 --pos 384
 xrandr --output HDMI-1-0 --auto --right-of eDP
+xrandr --output DisplayPort-1 --auto --right-of eDP
