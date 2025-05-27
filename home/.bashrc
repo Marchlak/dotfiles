@@ -159,12 +159,14 @@ alias lso="ls"
 alias ll='lsd -alF'
 alias la='lsd -A'
 alias l='lsd -CF'
+alias cd='z'
 alias fzfb='fzf --preview "bat --color=always --style=numbers --line-range=:500 {}"'
 alias nvimf='nvim $(fzf -m --preview "bat --color=always --style=numbers --line-range=:500 {}")'
-alias cd="z"
 alias wifilist='nmcli device wifi list'
 wificon() {
   nmcli device wifi connect "$1" password "$2"
 }
 export AWS_PROFILE=optima-sim-scenarios
 cgpt(){ find . -type f -name "*.$1" -exec cat {} + | xclip -selection clipboard; }
+export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
+export PATH=$JAVA_HOME/bin:$PATH

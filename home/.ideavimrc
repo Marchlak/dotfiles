@@ -1,6 +1,9 @@
 let mapleader=" "
 nnoremap <leader>ff :action GotoFile<CR>
-nnoremap <leader>fg :action GotoSymbol<CR>
+nnoremap <leader>fg :action FindInPath<CR>
+xnoremap <leader>fg :action FindInPath<CR>
+nnoremap <leader>fs :action GotoSymbol<CR>
+xnoremap <leader>fs :action GotoSymbol<CR>
 nnoremap <leader>fc :action GotoClass<CR>
 nnoremap <leader>fb :action RecentFiles<CR>
 nnoremap <leader>gd :action GotoDeclaration<CR>
@@ -12,7 +15,7 @@ nnoremap <leader>gr :action RenameElement<CR>
 nnoremap <leader>gc :action CommentByLineComment<CR>
 nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
 nnoremap <leader>mb :action CompileProject<CR>
-nnoremap <leader>mr :action ReformatCode<CR>
+nnoremap <leader>cf :action ReformatCode<CR>
 nnoremap <leader>qq :action CloseActiveTab<CR>
 map <leader>u :action FindUsages<CR>
 map <leader>p :action ShowUsages<CR>
@@ -26,4 +29,6 @@ nnoremap <C-f> :action Find<CR>
 xnoremap <C-f> :action Find<CR>
 nnoremap <C-r> :action Replace<CR>
 xnoremap <C-r> :action Replace<CR>
-
+nnoremap <leader>nb :action GotoNextError<CR>
+nnoremap <leader>np :action GotoPreviousError<CR>
+nnoremap <leader>gl :action GotoLine<CR>
