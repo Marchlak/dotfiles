@@ -10,12 +10,12 @@ nnoremap <leader>gd :action GotoDeclaration<CR>
 nnoremap <leader>gi :action GotoImplementation<CR>
 nnoremap <leader>gD :action GotoTypeDeclaration<CR>
 nnoremap <leader>kk :action QuickDocumentation<CR>
-nnoremap <leader>gu :action FindUsages<CR>
-nnoremap <leader>gr :action RenameElement<CR>
+nnoremap <leader>fu :action FindUsages<CR>
+nnoremap <leader>re :action RenameElement<CR>
 nnoremap <leader>gc :action CommentByLineComment<CR>
-nnoremap <leader>tt :action ActivateTerminalToolWindow<CR>
 nnoremap <leader>mb :action CompileProject<CR>
 nnoremap <leader>cf :action ReformatCode<CR>
+xnoremap <leader>cf :action ReformatCode<CR>
 nnoremap <leader>qq :action CloseActiveTab<CR>
 map <leader>u :action FindUsages<CR>
 map <leader>p :action ShowUsages<CR>
@@ -32,3 +32,12 @@ xnoremap <C-r> :action Replace<CR>
 nnoremap <leader>nb :action GotoNextError<CR>
 nnoremap <leader>np :action GotoPreviousError<CR>
 nnoremap <leader>gl :action GotoLine<CR>
+set NERDTree
+nnoremap <leader>pv :action ActivateProjectToolWindow<CR>
+nnoremap <leader>h :action HideActiveWindow<CR>
+nnoremap <leader>tt :NERDTreeToggle<CR>
+nnoremap <leader>tf :NERDTreeFind<CR>
+xnoremap <leader>tf :NERDTreeFind<CR>
+nnoremap <leader>tc :NERDTreeClose<CR>
+nnoremap <leader>tr :NERDTreeRefreshRoot<CR>
+nnoremap <leader>tp :NERDTreeFocus<CR>
