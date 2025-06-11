@@ -48,4 +48,6 @@ map <leader>bv <Action>(ViewBreakpoints)
 nnoremap <leader>db :action Debug<CR>
 nnoremap <leader>ss :action Stop<CR>
 nnoremap R <C-r>
-nnoremap <leader>gb :action Annotate<CR>
+nnnoremap <silent> <C-h> :action GotoPreviousSplitter<CR>
+nnoremap <silent> <C-l> :action GotoNextSplitter<CR>noremap <leader>gb :action Annotate<CR>
+nnoremap <leader>dr :action Debugger.Resume<CR>

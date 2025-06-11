@@ -167,6 +167,22 @@ wificon() {
   nmcli device wifi connect "$1" password "$2"
 }
 export AWS_PROFILE=optima-sim-scenarios
-cgpt(){ find . -type f -name "*.$1" -exec cat {} + | xclip -selection clipboard; }
+cgpt() {
+  if [ "$#" -lt 1 ]; then
+    echo "Użycie: cgpt rozszerzenie1 [rozszerzenie2 ...]" >&2
+    return 1
+  fi
+  local ext args
+  args=()
+  for ext in "$@"; do
+    args+=( -name "*.$ext" -o )
+  done
+  unset 'args[${#args[@]}-1]'
+  find . -type f \( "${args[@]}" \) -print0 |
+  while IFS= read -r -d '' file; do
+    printf '%s\n' "$file"
+    cat "$file"
+  done | xclip -selection clipboard
+}
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 export PATH=$JAVA_HOME/bin:$PATH
