@@ -51,3 +51,15 @@ nnoremap R <C-r>
 nnnoremap <silent> <C-h> :action GotoPreviousSplitter<CR>
 nnoremap <silent> <C-l> :action GotoNextSplitter<CR>noremap <leader>gb :action Annotate<CR>
 nnoremap <leader>dr :action Debugger.Resume<CR>
+nnoremap <leader>rn :action RenameElement<CR>
+xnoremap <leader>rn :action RenameElement<CR>
+nnoremap <leader>sh :split<CR>
+nnoremap <leader>sv :vsplit<CR>
+nmap <leader>nc <Action>(NewClass)
+autocmd FileType nerdtree nunmap  <buffer> c
+autocmd FileType nerdtree nmap    <buffer> c <Action>(NewClass)
+nmap <leader>c :action NewClass<CR>
+nnoremap <leader>im :action ImplementMethods<CR>
+nnoremap <leader>om :action OverrideMethods<CR>
+nnoremap <leader>mt :action MoveEditorToOppositeTabGroup<CR>
+nnoremap <leader>gn :action Generate<CR>
