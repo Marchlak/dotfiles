@@ -17,8 +17,9 @@ set $ws10 "10"
 exec_always --no-startup-id ~/.config/i3/config.d/scripts/monitors.sh
 
 set $disp1 eDP-1-2
-set $disp2 eDP
+set $disp2 HDMI-0
 
+exec_always --no-startup-id feh --bg-fill ~/Pictures/wallpapers/Tower-Night.png
 exec_always --no-startup-id xrandr --output $disp1 --primary --auto --output $disp2 --auto --right-of $disp1
 
 
