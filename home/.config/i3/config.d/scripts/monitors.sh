@@ -1,6 +1,9 @@
-#!/bin/bash
-# xrandr --output HDMI-A-0 --mode 1920x1080 --pos 0x0 --primary
-# xrandr --output DisplayPort-1 --mode 1920x1080 --pos 1920x0
-# xrandr --output DVI-D-0 --mode 1920x1080 --pos 384
-xrandr --output HDMI-1-0 --auto --right-of eDP
-xrandr --output DisplayPort-1 --auto --right-of eDP
+#!/usr/bin/env bash
+lap=eDP-1-2
+ext=$(xrandr --query | awk '$2=="connected" && $1!="'$lap'" {print $1; exit}')
+[[ -z $ext ]] && exit 0
+cfg=$HOME/.config/i3/config
+cur=$(grep '^set \$disp2 ' "$cfg" | awk '{print $3}')
+[[ $ext == $cur ]] && exit 0
+sed -i "s|^set \$disp2 .*|set \$disp2 $ext|" "$cfg"
+i3-msg restart

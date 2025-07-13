@@ -14,8 +14,13 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-set $disp1 "eDP"
-set $disp2 "HDMI-1-0"
+exec_always --no-startup-id ~/.config/i3/config.d/scripts/monitors.sh
+
+set $disp1 eDP-1-2
+set $disp2 HDMI-0
+
+exec_always --no-startup-id xrandr --output $disp1 --primary --auto --output $disp2 --auto --right-of $disp1
+
 
 include ~/.config/i3/config.d/*.conf
 
