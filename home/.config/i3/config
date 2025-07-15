@@ -22,6 +22,8 @@ set $disp2 HDMI-0
 exec_always --no-startup-id feh --bg-fill ~/Pictures/wallpapers/Tower-Night.png
 exec_always --no-startup-id xrandr --output $disp1 --primary --auto --output $disp2 --auto --right-of $disp1
 
+exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
+exec --no-startup-id xsettingsd
 
 include ~/.config/i3/config.d/*.conf
 

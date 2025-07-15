@@ -184,3 +184,15 @@ cgpt() {
 }
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 export PATH=$JAVA_HOME/bin:$PATH
+
+runwatcher() {
+  local vpy="/home/marchlak/Scripts/venv/bin/python"
+  local script="/home/marchlak/Scripts/watcher.py"
+  local delay="${1:-6}"
+  local trunc="${2:-true}"
+  if [ "$trunc" = true ] || [ "$trunc" = 1 ]; then
+    "$vpy" "$script" --delay-hour "$delay" --require-truncate
+  else
+    "$vpy" "$script" --delay-hour "$delay"
+  fi
+}
