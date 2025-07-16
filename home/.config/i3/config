@@ -1,5 +1,5 @@
 exec_always setxkbmap -layout pl
-
+exec --no-startup-id dunst
 ###variables
 set $mod Mod4
 
@@ -51,8 +51,6 @@ mode "resize" {
         bindsym Escape mode "default"
         bindsym $mod+r mode "default"
 }
-
-bindsym $mod+r mode "resize"
 
 bindsym $mod+Shift+x exec --no-startup-id i3lock-fancy
 exec --no-startup-id xautolock -time 10 -locker i3lock-fancy
