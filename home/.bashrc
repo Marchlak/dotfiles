@@ -125,9 +125,6 @@ function yaz() {
 
 
 export $(grep -v '^#' ~/.env | xargs)
-eval "$(zoxide init bash)"
-
-eval "$(starship init bash)"
 
 
 alias xcp="xclip -selection clipboard"
@@ -207,3 +204,6 @@ runwatcher() {
 }
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+eval "$(starship init bash)"
+eval "$(zoxide init bash)"
