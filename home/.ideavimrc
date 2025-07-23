@@ -50,7 +50,7 @@ nnoremap <leader>ss :action Stop<CR>
 nnoremap R <C-r>
 nnnoremap <silent> <C-h> :action GotoPreviousSplitter<CR>
 nnoremap <silent> <C-l> :action GotoNextSplitter<CR>noremap <leader>gb :action Annotate<CR>
-nnoremap <leader>dr :action Debugger.Resume<CR>
+nnoremap <leader>dr :action ConfigurationXDebuggerResumeAction<CR>
 nnoremap <leader>rn :action RenameElement<CR>
 xnoremap <leader>rn :action RenameElement<CR>
 nnoremap <leader>sh :split<CR>

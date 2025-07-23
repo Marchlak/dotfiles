@@ -121,29 +121,13 @@ function yaz() {
 #   fi
 # fi
 
-# Set up fzf key bindings and fuzzy completion
-eval "$(fzf --bash)"
 
 
-if command -v fzf &>/dev/null; then
-  # Don't source FZF shell integrations if version is older than 0.48 (Avoids `unknown option: --bash`)
-  # Version comparison technique courtesy of Luciano Andress Martini:
-  # https://unix.stackexchange.com/questions/285924/how-to-compare-a-programs-version-in-a-shell-script
-  FZF_VERSION="$(fzf --version | cut -d' ' -f1)"
-  if [[ -f ~/.fzf.bash && "$(printf '%s\n' 0.48 "$FZF_VERSION" | sort -V | head -n1)" = 0.48 ]]; then
-    . ~/.fzf.bash
-  fi
-fi
 
 export $(grep -v '^#' ~/.env | xargs)
 eval "$(zoxide init bash)"
 
 eval "$(starship init bash)"
-
-export FZF_CTRL_T_OPTS="
-  --walker-skip .git,node_modules,target
-  --preview 'bat -n --color=always {}'
-  --bind 'ctrl-/:change-preview-window(down|hidden|)'"
 
 
 alias xcp="xclip -selection clipboard"
@@ -186,13 +170,40 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 export PATH=$JAVA_HOME/bin:$PATH
 
 runwatcher() {
-  local vpy="/home/marchlak/Scripts/venv/bin/python"
-  local script="/home/marchlak/Scripts/watcher.py"
-  local delay="${1:-6}"
-  local trunc="${2:-true}"
-  if [ "$trunc" = true ] || [ "$trunc" = 1 ]; then
-    "$vpy" "$script" --delay-hour "$delay" --require-truncate
-  else
-    "$vpy" "$script" --delay-hour "$delay"
-  fi
+    local delay=6
+    local require_truncate=true
+    local limit=1
+    local saveflag=false
+    local savedir=""
+    local vpy="/home/marchlak/Scripts/venv/bin/python"
+    local script="/home/marchlak/Scripts/watcher.py"
+    local usage=$'Użycie: runwatcher [OPCJE]\n\nOpcje:\n  -d, --delay-hour N          opóźnienie (domyślnie 6)\n  -t, --require-truncate      wymuś truncate (domyślne zachowanie)\n  -N, --no-truncate           wyłącz truncate\n  -n, --limit N               liczba symulacji po jednym truncate (domyślnie 1, 0 = bez limitu)\n  -s, --save[=DIR]            zapisuj linki (brak DIR = nazwa scenariusza)\n  -h, --help                  pomoc\n'
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -d|--delay-hour)      delay="$2"; shift 2 ;;
+            -t|--require-truncate) require_truncate=true; shift ;;
+            -N|--no-truncate)     require_truncate=false; shift ;;
+            -n|--limit)           limit="$2"; shift 2 ;;
+            -s|--save)
+                saveflag=true
+                if [[ -n "$2" && "$2" != -* ]]; then
+                    savedir="$2"; shift 2
+                else
+                    shift
+                fi
+                ;;
+            -h|--help)            printf "%s" "$usage"; return 0 ;;
+            --)                   shift; break ;;
+            *)                    echo "Nieznana opcja: $1" >&2; echo; printf "%s" "$usage"; return 1 ;;
+        esac
+    done
+    local cmd=("$vpy" "$script" --delay-hour "$delay" --limit-per-truncate "$limit")
+    [ "$require_truncate" = true ] && cmd+=("--require-truncate")
+    if [ "$saveflag" = true ]; then
+        cmd+=("--save")
+        [ -n "$savedir" ] && cmd+=("$savedir")
+    fi
+    "${cmd[@]}"
 }
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
