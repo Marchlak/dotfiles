@@ -48,8 +48,6 @@ map <leader>bv <Action>(ViewBreakpoints)
 nnoremap <leader>db :action Debug<CR>
 nnoremap <leader>ss :action Stop<CR>
 nnoremap R <C-r>
-nnnoremap <silent> <C-h> :action GotoPreviousSplitter<CR>
-nnoremap <silent> <C-l> :action GotoNextSplitter<CR>
 noremap <leader>gb :action Annotate<CR>
 nnoremap <leader>dr :action ConfigurationXDebuggerResumeAction<CR>
 nnoremap <leader>rn :action RenameElement<CR>
@@ -66,3 +64,7 @@ nnoremap <leader>mt :action MoveEditorToOppositeTabGroup<CR>
 nnoremap <leader>gn :action Generate<CR>
 nnoremap <C-w> :action CloseContent<CR>
 nnoremap <leader>da :action Debugger.AddToWatch<CR>
+nnoremap <silent> <C-h> :action PrevSplitter<CR>
+nnoremap <silent> <C-l> :action NextSplitter<CR>
+nnoremap <silent> <C-S-w> :action NextSplitter<CR>
+nnoremap <C-S-e> :action MoveEditorToOppositeTabGroup<CR>
