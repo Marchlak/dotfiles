@@ -61,4 +61,4 @@ exec --no-startup-id xautolock -time 10 -locker i3lock-fancy
 #         status_command i3status
 # }
 
-exec_always feh --bg-fill ~/Pictures/wallpapers/Tower-Night.png ~/Pictures/wallpapers/Tower-Night.png
+exec_always --no-startup-id bash -lc 'sleep 1; ~/.config/i3/config.d/scripts/wallpaper.sh'
