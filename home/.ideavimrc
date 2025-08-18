@@ -54,10 +54,8 @@ nnoremap <leader>rn :action RenameElement<CR>
 xnoremap <leader>rn :action RenameElement<CR>
 nnoremap <leader>sh :split<CR>
 nnoremap <leader>sv :vsplit<CR>
-nmap <leader>nc <Action>(NewClass)
-autocmd FileType nerdtree nunmap  <buffer> c
-autocmd FileType nerdtree nmap    <buffer> c <Action>(NewClass)
-nmap <leader>c :action NewClass<CR>
+nmap <leader>nc :action NewClass<CR>
+nmap <leader>nk :action Kotlin.NewFile<CR>
 nnoremap <leader>im :action ImplementMethods<CR>
 nnoremap <leader>om :action OverrideMethods<CR>
 nnoremap <leader>mt :action MoveEditorToOppositeTabGroup<CR>
@@ -68,3 +66,4 @@ nnoremap <silent> <C-h> :action PrevSplitter<CR>
 nnoremap <silent> <C-l> :action NextSplitter<CR>
 nnoremap <silent> <C-S-w> :action NextSplitter<CR>
 nnoremap <C-S-e> :action MoveEditorToOppositeTabGroup<CR>
+nnoremap <leader>sd :action SafeDelete<CR>
