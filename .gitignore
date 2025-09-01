@@ -1,2 +1,7 @@
 watcher.py
 venv/
+IntelliJIdea*/
+.idea/
+ssl/
+*.key
+*license
