@@ -1,0 +1,18 @@
+[10:54:10.389] com.zaxxer.hikari.HikariDataSource - INFO: HikariPool-1 - Starting...
+[10:54:10.939] com.zaxxer.hikari.pool.HikariPool - INFO: HikariPool-1 - Added connection org.postgresql.jdbc.PgConnection@79207381
+[10:54:10.941] com.zaxxer.hikari.HikariDataSource - INFO: HikariPool-1 - Start completed.
+[10:54:13.320] e.initialization.beans.ScenarioBean - INFO: Loading Facilities
+[10:54:13.532] e.initialization.beans.ScenarioBean - INFO: Loaded 2 facilities
+[10:54:14.021] experiments.base.ARMAServerWrapper - INFO: Recovered new task 3142 at time Tue Sep 02 10:54:14 CEST 2025
+[10:54:14.034] experiments.base.ARMAServerWrapper - INFO: Geographic data for simulation is missing. Trying to download it from S3 bucket.
+[10:54:14.043] m.h.LoggingUncaughtExceptionHandler - ERROR: Sim Error:
+java.lang.IllegalStateException: Profile file 'setups/s3credentials' does not exist.
+	at software.amazon.awssdk.utils.Validate.validState(Validate.java:423)
+	at software.amazon.awssdk.profiles.ProfileFile$BuilderImpl.content(ProfileFile.java:276)
+	at experiments.base.DataS3Facade.credentials(DataS3Facade.java:30)
+	at experiments.base.DataS3Facade.s3Client(DataS3Facade.java:22)
+	at experiments.base.GeographicDataS3Facade.downloadFor(GeographicDataS3Facade.java:40)
+	at experiments.base.GeographicDataS3Facade.downloadFor(GeographicDataS3Facade.java:36)
+	at experiments.base.ARMAServerWrapper.main(ARMAServerWrapper.java:64)
+[10:54:14.044] m.h.LoggingUncaughtExceptionHandler - ERROR: Cause:
+[10:54:14.044] m.h.LoggingUncaughtExceptionHandler - ERROR: Suppressed: 

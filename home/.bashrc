@@ -172,15 +172,19 @@ runwatcher() {
     local limit=1
     local saveflag=false
     local savedir=""
+    local uber_scenarios=()
     local vpy="/home/marchlak/Scripts/venv/bin/python"
     local script="/home/marchlak/Scripts/watcher.py"
-    local usage=$'Użycie: runwatcher [OPCJE]\n\nOpcje:\n  -d, --delay-hour N          opóźnienie (domyślnie 6)\n  -t, --require-truncate      wymuś truncate (domyślne zachowanie)\n  -N, --no-truncate           wyłącz truncate\n  -n, --limit N               liczba symulacji po jednym truncate (domyślnie 1, 0 = bez limitu)\n  -s, --save[=DIR]            zapisuj linki (brak DIR = nazwa scenariusza)\n  -h, --help                  pomoc\n'
+    local jar="/home/marchlak/DS360/OPTIMAALL/OPTIMA/OPTIMA-uber.jar"
+    local jdir="$(dirname "$jar")"
+    local usage=$'Użycie: runwatcher [OPCJE]\n\nOpcje:\n  -d, --delay-hour N          opóźnienie (domyślnie 6)\n  -t, --require-truncate      wymuś truncate (domyślne)\n  -N, --no-truncate           wyłącz truncate\n  -n, --limit N               w trybie normalnym: limit po truncate; w -ub: uruchomień na scenariusz\n  -s, --save[=DIR]            zapisuj linki\n  -ub SCEN1 [SCEN2 ...]       tryb uberjaru z listą scenariuszy\n  -h, --help                  pomoc\n  --                          zakończ parsowanie i przekaż resztę do skryptu\n  Dodatkowe opcje są przekazywane bez zmian do watcher.py'
+
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -d|--delay-hour)      delay="$2"; shift 2 ;;
+            -d|--delay-hour) delay="$2"; shift 2 ;;
             -t|--require-truncate) require_truncate=true; shift ;;
-            -N|--no-truncate)     require_truncate=false; shift ;;
-            -n|--limit)           limit="$2"; shift 2 ;;
+            -N|--no-truncate) require_truncate=false; shift ;;
+            -n|--limit) limit="$2"; shift 2 ;;
             -s|--save)
                 saveflag=true
                 if [[ -n "$2" && "$2" != -* ]]; then
@@ -189,21 +193,50 @@ runwatcher() {
                     shift
                 fi
                 ;;
-            -h|--help)            printf "%s" "$usage"; return 0 ;;
-            --)                   shift; break ;;
-            *)                    echo "Nieznana opcja: $1" >&2; echo; printf "%s" "$usage"; return 1 ;;
+            -ub)
+                shift
+                while [[ -n "$1" && "$1" != -* ]]; do
+                    uber_scenarios+=("$1"); shift
+                done
+                ;;
+            -h|--help) printf "%s" "$usage"; return 0 ;;
+            --) shift; break ;;
+            *) break ;;
         esac
     done
-    local cmd=("$vpy" "$script" --delay-hour "$delay" --limit-per-truncate "$limit")
+
+    local cmd=("$vpy" "$script" --delay-hour "$delay" --limit-per-truncate "$limit" --jar "$jar")
     [ "$require_truncate" = true ] && cmd+=("--require-truncate")
     if [ "$saveflag" = true ]; then
         cmd+=("--save")
         [ -n "$savedir" ] && cmd+=("$savedir")
     fi
+    if [ "${#uber_scenarios[@]}" -gt 0 ]; then
+        cmd+=("-ub" "${uber_scenarios[@]}")
+    fi
+    cmd+=("$@")
+
+    pushd "$jdir" >/dev/null || { echo "Nie mogę wejść do $jdir"; return 1; }
     "${cmd[@]}"
+    local rc=$?
+    popd >/dev/null
+    return $rc
 }
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 eval "$(starship init bash)"
 eval "$(zoxide init bash)"
+alias filecount="bash ~/Scripts/file_count.sh"
+
+optima_uber() {
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  cd "$BASE" || return 1
+  ./gradlew --refresh-dependencies OPTIMA-uberJar --stacktrace || return 1
+  local JAR
+  JAR=$(ls -t "$BASE"/build/libs/*.jar 2>/dev/null | head -n1)
+  [ -n "$JAR" ] || return 1
+  mv -f "$JAR" "$BASE/"
+}
+
+alias optimajar='optima_uber'
