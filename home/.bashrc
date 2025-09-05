@@ -167,7 +167,7 @@ export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 export PATH=$JAVA_HOME/bin:$PATH
 
 runwatcher() {
-    local delay=6
+    local delay=8
     local require_truncate=true
     local limit=1
     local saveflag=false
@@ -232,7 +232,7 @@ alias filecount="bash ~/Scripts/file_count.sh"
 optima_uber() {
   local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
   cd "$BASE" || return 1
-  ./gradlew --refresh-dependencies OPTIMA-uberJar --stacktrace || return 1
+  ./gradlew OPTIMA-uberJar --stacktrace || return 1
   local JAR
   JAR=$(ls -t "$BASE"/build/libs/*.jar 2>/dev/null | head -n1)
   [ -n "$JAR" ] || return 1
@@ -240,3 +240,4 @@ optima_uber() {
 }
 
 alias optimajar='optima_uber'
+alias watchlogs="tail -F /home/marchlak/logs/uberjar.log |  bat --paging=never -l log"
