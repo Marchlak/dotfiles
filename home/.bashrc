@@ -239,5 +239,44 @@ optima_uber() {
   mv -f "$JAR" "$BASE/"
 }
 
+sensor_uber() {
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  builtin cd "$BASE" || return 1
+  ./gradlew SensorFileGenerator-uberJar --stacktrace || return 1
+  local JAR
+  JAR=$(ls -t "$BASE"/build/libs/SensorFileGenerator*.jar 2>/dev/null | head -n1)
+  [ -n "$JAR" ] || return 1
+  mv -f "$JAR" "$BASE/"
+}
+
+alias sensorjar='sensor_uber'
+
+sensor_run() {
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  builtin cd "$BASE" || return 1
+  ./gradlew SensorFileGenerator-uberJar --stacktrace || return 1
+  local JAR
+  JAR=$(ls -t "$BASE"/build/libs/SensorFileGenerator*.jar 2>/dev/null | head -n1)
+  [ -n "$JAR" ] || return 1
+  mv -f "$JAR" "$BASE/" || return 1
+  java -Xmx20g -jar "$BASE/$(basename "$JAR")" -c setups/main.json -n test
+}
+
+alias sensorrun='sensor_run'
+
 alias optimajar='optima_uber'
+
+optima_run() {
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  builtin cd "$BASE" || return 1
+  ./gradlew OPTIMA-uberJar --stacktrace || return 1
+  local JAR
+  JAR=$(ls -t "$BASE"/build/libs/OPTIMA*.jar 2>/dev/null | head -n1)
+  [ -n "$JAR" ] || { echo "Nie znaleziono artefaktu JAR"; return 1; }
+  mv -f "$JAR" "$BASE/" || return 1
+  java -Xmx42g -jar "$BASE/$(basename "$JAR")" -c setups/main.json -n test "$@"
+}
+
+alias optimarun='optima_run'
+
 alias watchlogs="tail -F /home/marchlak/logs/uberjar.log |  bat --paging=never -l log"
