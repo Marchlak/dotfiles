@@ -146,23 +146,71 @@ wificon() {
   nmcli device wifi connect "$1" password "$2"
 }
 export AWS_PROFILE=optima-sim-scenarios
+
 cgpt() {
-  if [ "$#" -lt 1 ]; then
-    echo "Użycie: cgpt rozszerzenie1 [rozszerzenie2 ...]" >&2
+  local exts=() names=() extras=() args=() files=() ext name list=0
+
+  if [[ $# -lt 1 ]]; then
+    echo "Użycie: cgpt [-l] [-e ext ...] [-n nazwa ...] | bez flag: cgpt ext1 [ext2 ...]" >&2
     return 1
   fi
-  local ext args
-  args=()
-  for ext in "$@"; do
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -e)
+        shift
+        while [[ $# -gt 0 && "$1" != -* ]]; do exts+=("$1"); shift; done
+        ;;
+      -n)
+        shift
+        while [[ $# -gt 0 && "$1" != -* ]]; do names+=("$1"); shift; done
+        ;;
+      -l)
+        list=1
+        shift
+        ;;
+      *)
+        extras+=("$1"); shift
+        ;;
+    esac
+  done
+
+  if [[ ${#exts[@]} -eq 0 && ${#names[@]} -eq 0 && ${#extras[@]} -gt 0 ]]; then
+    exts=("${extras[@]}")
+  fi
+
+  if [[ ${#exts[@]} -eq 0 && ${#names[@]} -eq 0 ]]; then
+    echo "Brak wzorców plików." >&2
+    return 1
+  fi
+
+  for ext in "${exts[@]}"; do
     args+=( -name "*.$ext" -o )
   done
+  for name in "${names[@]}"; do
+    args+=( -name "$name" -o )
+  done
   unset 'args[${#args[@]}-1]'
-  find . -type f \( "${args[@]}" \) -print0 |
-  while IFS= read -r -d '' file; do
-    printf '%s\n' "$file"
-    cat "$file"
-  done | xclip -selection clipboard
+
+  mapfile -d '' files < <(find . -type f \( "${args[@]}" \) -print0)
+
+  if [[ ${#files[@]} -eq 0 ]]; then
+    echo "Skopiowano 0 plików." >&2
+    return 0
+  fi
+
+  {
+    for file in "${files[@]}"; do
+      [[ $list -eq 1 ]] && echo "$file" >&2
+      printf '%s\n' "$file"
+      cat -- "$file"
+    done
+  } | xclip -selection clipboard
+
+  echo "Skopiowano ${#files[@]} plików." >&2
 }
+
+
 export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
 export PATH=$JAVA_HOME/bin:$PATH
 
