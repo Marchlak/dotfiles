@@ -47,6 +47,8 @@ exec --no-startup-id xautolock -time 10 -locker "~/.config/i3/config.d/scripts/l
 
 exec_always --no-startup-id bash -lc 'sleep 1; ~/.config/i3/config.d/scripts/wallpaper.sh'
 
+exec_always --no-startup-id bash -lc 'sleep 1; f="${XDG_CACHE_HOME:-$HOME/.cache}/redshift-step/temp"; t=$( [ -f "$f" ] && sed "s/[^0-9]//g" "$f" || echo 6500 ); if command -v sct >/dev/null 2>&1; then sct "$t"; elif command -v redshift >/dev/null 2>&1; then redshift -m randr -P -O "${t}K"; fi'
+
 default_border pixel 2
 default_floating_border pixel 2
 hide_edge_borders smart
