@@ -52,5 +52,5 @@ exec_always --no-startup-id bash -lc 'sleep 1; f="${XDG_CACHE_HOME:-$HOME/.cache
 default_border pixel 2
 default_floating_border pixel 2
 hide_edge_borders smart
-for_window [window_role="pop-up"] floating enable
-for_window [window_type="dialog"] floating enable
+# for_window [window_role="pop-up"] floating enable
+# for_window [window_type="dialog"] floating enable
