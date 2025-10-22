@@ -328,3 +328,90 @@ optima_run() {
 alias optimarun='optima_run'
 
 alias watchlogs="tail -F /home/marchlak/logs/uberjar.log |  bat --paging=never -l log"
+
+optima_test() {
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  local CFG="$BASE/setups/main.json"
+  local LOG="$BASE/logs.log"
+  local WPY="$HOME/Scripts/watcher.py"
+  local VPY="$HOME/Scripts/venv/bin/python"
+  local DEFAULT1="$HOME/simulations/test-simulations/main.json"
+  local DEFAULT2="$HOME/simulations/test-simulations/main-test.json"
+  local TEST_FILE="${1:-}"
+  if [ -z "$TEST_FILE" ]; then
+    if [ -r "$DEFAULT1" ]; then TEST_FILE="$DEFAULT1"
+    elif [ -r "$DEFAULT2" ]; then TEST_FILE="$DEFAULT2"
+    else echo "Brak pliku: $DEFAULT1 ani $DEFAULT2"; return 1
+    fi
+  fi
+  [ -r "$WPY" ] || { echo "Brak skryptu: $WPY"; return 1; }
+  [ -x "$VPY" ] || VPY="$(command -v python3 || true)"
+  [ -n "$VPY" ] || { echo "Brak Pythona"; return 1; }
+  builtin cd "$BASE" || return 1
+  ./gradlew OPTIMA-uberJar --stacktrace || return 1
+  local JAR
+  JAR=$(ls -t "$BASE"/build/libs/OPTIMA*.jar 2>/dev/null | head -n1) || return 1
+  mv -f "$JAR" "$BASE/OPTIMA-uber.jar" || return 1
+  [ -r "$TEST_FILE" ] || { echo "Brak pliku: $TEST_FILE"; return 1; }
+  command -v jq >/dev/null 2>&1 || { echo "Zainstaluj jq"; return 1; }
+  : > "$LOG"
+  local BAK
+  BAK=$(mktemp) || return 1
+  cp -f "$CFG" "$BAK" || return 1
+  local CHILD_PIDS=()
+  restore_cfg() { cp -f "$BAK" "$CFG" >/dev/null 2>&1; }
+  cleanup_all() {
+    local p
+    for p in "${CHILD_PIDS[@]}"; do kill -TERM "$p" 2>/dev/null; done
+    sleep 1
+    for p in "${CHILD_PIDS[@]}"; do kill -0 "$p" 2>/dev/null && kill -KILL "$p" 2>/dev/null; done
+  }
+  on_exit() { cleanup_all; restore_cfg; }
+  trap on_exit EXIT
+  on_int() { echo; echo "Przerwano"; cleanup_all; restore_cfg; exit 130; }
+  trap on_int INT
+  trap on_exit TERM
+  local len
+  len=$(jq 'if type=="array" then length elif (.tests|type?)=="array" then (.tests|length) else 0 end' "$TEST_FILE") || return 1
+  [ "$len" -gt 0 ] || { echo "Pusty zestaw testów"; return 1; }
+  local had_m=0
+  case $- in *m*) had_m=1; set +m;; esac
+  local START_TS="$(date +%F_%H-%M)"
+  local WLOG="$HOME/simulations/test-simulations/watcher_${START_TS}.log"
+  ( PYTHONUNBUFFERED=1 "$VPY" "$WPY" --delay-hour 0 --uber-logs off --tests-save-dir "$HOME/simulations/test-simulations" --tests-save-prefix "optima-test" --no-open 2>&1 | sed -u 's/^/[watcher] /' | tee -a "$WLOG" ) & local wpid=$!
+  CHILD_PIDS+=("$wpid")
+  for ((i=0;i<len;i++)); do
+    local SCEN DB DESC
+    SCEN=$(jq -r 'if type=="array" then .[$i].scenario else .tests[$i].scenario end' --argjson i "$i" "$TEST_FILE")
+    DB=$(jq -r 'if type=="array" then .[$i].server else .tests[$i].server end' --argjson i "$i" "$TEST_FILE")
+    DESC=$(jq -r 'if type=="array" then (.[$i].description // "") else (.tests[$i].description // "") end' --argjson i "$i" "$TEST_FILE")
+    [[ "$SCEN" =~ ^[0-9]+$ ]] || { echo "Nieprawidłowy scenario w pozycji $i"; return 1; }
+    [ -n "$DB" ] || { echo "Brak databaseName w pozycji $i"; return 1; }
+    jq --argjson s "$SCEN" --arg db "$DB" '.main.scenarioName=$s | .connectionPool["dataSource.databaseName"]=$db' "$BAK" > "$CFG.tmp" || return 1
+    mv -f "$CFG.tmp" "$CFG" || return 1
+    : > "$LOG"
+    echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB})"
+    [ -n "$DESC" ] && [ "$DESC" != "null" ] && echo "    Opis: $DESC"
+    java -Xmx42g -jar "$BASE/OPTIMA-uber.jar" -c "$CFG" -n test >/dev/null 2>&1 & local jpid=$!
+    CHILD_PIDS+=("$jpid")
+    ( tail -F -n0 "$LOG" | grep -m1 -E 'Finishing run' ) >/dev/null 2>&1 & local mpid=$!
+    CHILD_PIDS+=("$mpid")
+    while :; do
+      if ! kill -0 "$jpid" 2>/dev/null; then break; fi
+      if ! kill -0 "$mpid" 2>/dev/null; then break; fi
+      sleep 1
+    done
+    if kill -0 "$jpid" 2>/dev/null; then
+      kill -TERM "$jpid" 2>/dev/null
+      for _ in {1..30}; do kill -0 "$jpid" 2>/dev/null || break; sleep 1; done
+      kill -0 "$jpid" 2>/dev/null && kill -KILL "$jpid" 2>/dev/null
+      wait "$jpid" 2>/dev/null
+    fi
+    kill "$mpid" 2>/dev/null; wait "$mpid" 2>/dev/null
+    echo "==> Zakończono symulację ${SCEN}"
+  done
+  kill "$wpid" 2>/dev/null; wait "$wpid" 2>/dev/null
+  [ $had_m -eq 1 ] && set -m
+}
+
+alias optima_tail='tail -n0 -F /home/marchlak/DS360/OPTIMAALL/OPTIMA/logs.log | bat --paging=never -l log'
