@@ -248,7 +248,6 @@ runwatcher() {
                 done
                 ;;
             -h|--help) printf "%s" "$usage"; return 0 ;;
-            --) shift; break ;;
             *) break ;;
         esac
     done
@@ -335,83 +334,145 @@ optima_test() {
   local LOG="$BASE/logs.log"
   local WPY="$HOME/Scripts/watcher.py"
   local VPY="$HOME/Scripts/venv/bin/python"
-  local DEFAULT1="$HOME/simulations/test-simulations/main.json"
-  local DEFAULT2="$HOME/simulations/test-simulations/main-test.json"
-  local TEST_FILE="${1:-}"
-  if [ -z "$TEST_FILE" ]; then
-    if [ -r "$DEFAULT1" ]; then TEST_FILE="$DEFAULT1"
-    elif [ -r "$DEFAULT2" ]; then TEST_FILE="$DEFAULT2"
-    else echo "Brak pliku: $DEFAULT1 ani $DEFAULT2"; return 1
+  local ROOT="/home/marchlak/simulations/test-simulations"
+  local CWD="$PWD"
+  local TEST_FILE_RAW="${1:-}"
+  local TEST_FILE=""
+
+  if [ -n "$TEST_FILE_RAW" ]; then
+    if [ -r "$TEST_FILE_RAW" ]; then TEST_FILE="$CWD/$TEST_FILE_RAW"
+    elif [ -r "./$TEST_FILE_RAW" ]; then TEST_FILE="$CWD/$TEST_FILE_RAW"
+    elif [ -r "$ROOT/$TEST_FILE_RAW" ]; then TEST_FILE="$ROOT/$TEST_FILE_RAW"
+    else echo "Brak pliku testów: $TEST_FILE_RAW"; return 1
+    fi
+  else
+    if [ -r "$ROOT/main.json" ]; then TEST_FILE="$ROOT/main.json"
+    elif [ -r "$ROOT/main-test.json" ]; then TEST_FILE="$ROOT/main-test.json"
+    else echo "Brak domyślnego pliku testów w $ROOT"; return 1
     fi
   fi
+
+  command -v readlink >/dev/null 2>&1 && TEST_FILE="$(readlink -f "$TEST_FILE")"
+  [ -r "$TEST_FILE" ] || { echo "Brak pliku: $TEST_FILE"; return 1; }
   [ -r "$WPY" ] || { echo "Brak skryptu: $WPY"; return 1; }
   [ -x "$VPY" ] || VPY="$(command -v python3 || true)"
   [ -n "$VPY" ] || { echo "Brak Pythona"; return 1; }
+
   builtin cd "$BASE" || return 1
   ./gradlew OPTIMA-uberJar --stacktrace || return 1
-  local JAR
-  JAR=$(ls -t "$BASE"/build/libs/OPTIMA*.jar 2>/dev/null | head -n1) || return 1
+  local JAR; JAR=$(ls -t "$BASE"/build/libs/OPTIMA*.jar 2>/dev/null | head -n1) || return 1
   mv -f "$JAR" "$BASE/OPTIMA-uber.jar" || return 1
-  [ -r "$TEST_FILE" ] || { echo "Brak pliku: $TEST_FILE"; return 1; }
   command -v jq >/dev/null 2>&1 || { echo "Zainstaluj jq"; return 1; }
   : > "$LOG"
-  local BAK
-  BAK=$(mktemp) || return 1
+
+  local BAK; BAK=$(mktemp) || return 1
   cp -f "$CFG" "$BAK" || return 1
+
   local CHILD_PIDS=()
   restore_cfg() { cp -f "$BAK" "$CFG" >/dev/null 2>&1; }
-  cleanup_all() {
-    local p
-    for p in "${CHILD_PIDS[@]}"; do kill -TERM "$p" 2>/dev/null; done
-    sleep 1
-    for p in "${CHILD_PIDS[@]}"; do kill -0 "$p" 2>/dev/null && kill -KILL "$p" 2>/dev/null; done
-  }
+  cleanup_all() { local p; for p in "${CHILD_PIDS[@]}"; do kill -TERM "$p" 2>/dev/null; done; sleep 1; for p in "${CHILD_PIDS[@]}"; do kill -0 "$p" 2>/dev/null && kill -KILL "$p" 2>/dev/null; done; }
   on_exit() { cleanup_all; restore_cfg; }
   trap on_exit EXIT
   on_int() { echo; echo "Przerwano"; cleanup_all; restore_cfg; exit 130; }
   trap on_int INT
   trap on_exit TERM
-  local len
-  len=$(jq 'if type=="array" then length elif (.tests|type?)=="array" then (.tests|length) else 0 end' "$TEST_FILE") || return 1
+
+  local len; len=$(jq 'if type=="array" then length elif (.tests|type?)=="array" then (.tests|length) else 0 end' "$TEST_FILE") || return 1
   [ "$len" -gt 0 ] || { echo "Pusty zestaw testów"; return 1; }
-  local had_m=0
-  case $- in *m*) had_m=1; set +m;; esac
-  local START_TS="$(date +%F_%H-%M)"
-  local WLOG="$HOME/simulations/test-simulations/watcher_${START_TS}.log"
-  ( PYTHONUNBUFFERED=1 "$VPY" "$WPY" --delay-hour 0 --uber-logs off --tests-save-dir "$HOME/simulations/test-simulations" --tests-save-prefix "optima-test" --no-open 2>&1 | sed -u 's/^/[watcher] /' | tee -a "$WLOG" ) & local wpid=$!
-  CHILD_PIDS+=("$wpid")
+
+  local DATE_DIR; DATE_DIR="$(date +%F)"
+  local TIME_TAG; TIME_TAG="$(date +%H-%M)"
+  local SRC_NAME; SRC_NAME="$(basename "$TEST_FILE")"
+  local OUT_DIR="$ROOT/$DATE_DIR"
+  mkdir -p "$OUT_DIR"
+  local OUT_TXT="$OUT_DIR/${TIME_TAG}_${SRC_NAME%.*}.txt"
+  local EXTRA_FILE="$OUT_DIR/.current_extra"
+
+  local G_BRANCH; G_BRANCH=$(git -C "$BASE" rev-parse --abbrev-ref HEAD 2>/dev/null)
+  local G_HASH;   G_HASH=$(git -C "$BASE" rev-parse HEAD 2>/dev/null)
+  local G_AUTH;   G_AUTH=$(git -C "$BASE" log -1 --pretty='%an <%ae>' 2>/dev/null)
+  local G_DATE;   G_DATE=$(git -C "$BASE" log -1 --pretty='%ad' --date=iso-strict 2>/dev/null)
+  local G_SUBJ;   G_SUBJ=$(git -C "$BASE" log -1 --pretty='%s' 2>/dev/null)
+  local G_BODY;   G_BODY=$(git -C "$BASE" log -1 --pretty='%b' 2>/dev/null)
+
+  {
+    echo "started_at: $(date -Iseconds)"
+    echo "repo: $BASE"
+    echo "source_tests: $TEST_FILE"
+    echo "branch: ${G_BRANCH:-unknown}"
+    echo "commit: ${G_HASH:-unknown}"
+    echo "author: ${G_AUTH:-unknown}"
+    echo "commit_date: ${G_DATE:-unknown}"
+    echo "subject: ${G_SUBJ:-}"
+    [ -n "$G_BODY" ] && { echo "body:"; echo "$G_BODY"; }
+    echo
+    echo "links:"
+  } > "$OUT_TXT"
+
+  local had_m=0; case $- in *m*) had_m=1; set +m;; esac
+  ( PYTHONUNBUFFERED=1 "$VPY" "$WPY" --delay-hour 0 --uber-logs off --tests-save-file "$OUT_TXT" --tests-extra-file "$EXTRA_FILE" --no-open 2>&1 | sed -u 's/^/[watcher] /' ) & local wpid=$!; CHILD_PIDS+=("$wpid")
+
   for ((i=0;i<len;i++)); do
-    local SCEN DB DESC
+    local SCEN DB DESC REPEAT
     SCEN=$(jq -r 'if type=="array" then .[$i].scenario else .tests[$i].scenario end' --argjson i "$i" "$TEST_FILE")
     DB=$(jq -r 'if type=="array" then .[$i].server else .tests[$i].server end' --argjson i "$i" "$TEST_FILE")
     DESC=$(jq -r 'if type=="array" then (.[$i].description // "") else (.tests[$i].description // "") end' --argjson i "$i" "$TEST_FILE")
+    REPEAT=$(jq -r 'if type=="array" then (.[$i].repeat // 1) else (.tests[$i].repeat // 1) end' --argjson i "$i" "$TEST_FILE")
+
     [[ "$SCEN" =~ ^[0-9]+$ ]] || { echo "Nieprawidłowy scenario w pozycji $i"; return 1; }
     [ -n "$DB" ] || { echo "Brak databaseName w pozycji $i"; return 1; }
+    [[ "$REPEAT" =~ ^[0-9]+$ ]] || REPEAT=1
+    [ "$REPEAT" -ge 1 ] || REPEAT=1
+
+    if [ -n "$DESC" ] && [ "$DESC" != "null" ]; then
+      printf 'description=%s\n' "$(printf '%s' "$DESC" | tr '\n' ' ')" > "$EXTRA_FILE"
+    else
+      : > "$EXTRA_FILE"
+    fi
+
     jq --argjson s "$SCEN" --arg db "$DB" '.main.scenarioName=$s | .connectionPool["dataSource.databaseName"]=$db' "$BAK" > "$CFG.tmp" || return 1
     mv -f "$CFG.tmp" "$CFG" || return 1
-    : > "$LOG"
-    echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB})"
-    [ -n "$DESC" ] && [ "$DESC" != "null" ] && echo "    Opis: $DESC"
-    java -Xmx42g -jar "$BASE/OPTIMA-uber.jar" -c "$CFG" -n test >/dev/null 2>&1 & local jpid=$!
-    CHILD_PIDS+=("$jpid")
-    ( tail -F -n0 "$LOG" | grep -m1 -E 'Finishing run' ) >/dev/null 2>&1 & local mpid=$!
-    CHILD_PIDS+=("$mpid")
-    while :; do
-      if ! kill -0 "$jpid" 2>/dev/null; then break; fi
-      if ! kill -0 "$mpid" 2>/dev/null; then break; fi
-      sleep 1
+
+    for ((r=1;r<=REPEAT;r++)); do
+      : > "$LOG"
+      if [ "$REPEAT" -gt 1 ]; then
+        echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB}) [powtórzenie ${r}/${REPEAT}]"
+      else
+        echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB})"
+      fi
+      [ -n "$DESC" ] && [ "$DESC" != "null" ] && echo "    Opis: $DESC"
+
+      java -Xmx42g -jar "$BASE/OPTIMA-uber.jar" -c "$CFG" -n test >/dev/null 2>&1 & local jpid=$!; CHILD_PIDS+=("$jpid")
+      ( tail -F -n0 "$LOG" | grep -m1 -E 'Finishing run' ) >/dev/null 2>&1 & local mpid=$!; CHILD_PIDS+=("$mpid")
+
+      while :; do
+        if ! kill -0 "$jpid" 2>/dev/null; then break; fi
+        if ! kill -0 "$mpid" 2>/dev/null; then break; fi
+        sleep 1
+      done
+
+      if kill -0 "$jpid" 2>/dev/null; then
+        kill -TERM "$jpid" 2>/dev/null
+        for _ in {1..30}; do kill -0 "$jpid" 2>/dev/null || break; sleep 1; done
+        kill -0 "$jpid" 2>/dev/null && kill -KILL "$jpid" 2>/dev/null
+        wait "$jpid" 2>/dev/null
+      fi
+      kill "$mpid" 2>/dev/null; wait "$mpid" 2>/dev/null
+      echo "==> Zakończono symulację ${SCEN} ${REPEAT:+[${r}/${REPEAT}]}"
     done
-    if kill -0 "$jpid" 2>/dev/null; then
-      kill -TERM "$jpid" 2>/dev/null
-      for _ in {1..30}; do kill -0 "$jpid" 2>/dev/null || break; sleep 1; done
-      kill -0 "$jpid" 2>/dev/null && kill -KILL "$jpid" 2>/dev/null
-      wait "$jpid" 2>/dev/null
-    fi
-    kill "$mpid" 2>/dev/null; wait "$mpid" 2>/dev/null
-    echo "==> Zakończono symulację ${SCEN}"
   done
+
   kill "$wpid" 2>/dev/null; wait "$wpid" 2>/dev/null
   [ $had_m -eq 1 ] && set -m
+  echo "Zapis: $OUT_TXT"
 }
 
 alias optima_tail='tail -n0 -F /home/marchlak/DS360/OPTIMAALL/OPTIMA/logs.log | bat --paging=never -l log'
+export PATH="$HOME/.local/bin:$PATH"
+
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init bash)"
+  alias cd='z'
+fi
+
+alias cdtest='cd /home/marchlak/simulations/test-simulations'
