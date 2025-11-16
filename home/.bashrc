@@ -336,9 +336,48 @@ optima_test() {
   local VPY="$HOME/Scripts/venv/bin/python"
   local ROOT="/home/marchlak/simulations/test-simulations"
   local CWD="$PWD"
+
+  for a in "$@"; do
+    case "$a" in
+      -h|--help)
+        cat <<EOF
+Użycie: optima_test [PLIK_TESTÓW]
+
+Opis:
+  Buduje OPTIMA-uber.jar, uruchamia po kolei symulacje z podanego pliku JSON
+  i zapisuje linki do wyników w katalogu:
+    ${ROOT}/<DATA>/<GODZINA>_<NAZWA_PLIKU_BEZ_ROZSZERZENIA>.txt
+  Watcher uruchamiany jest raz na sesję. CTRL+C przerywa sesję, ubija procesy
+  i przywraca oryginalny setups/main.json.
+
+Argumenty:
+  PLIK_TESTÓW   Nazwa/ścieżka do pliku JSON z listą testów. Gdy nie podano,
+                używane są: ${ROOT}/main.json lub ${ROOT}/main-test.json.
+                Rozpoznawanie ścieżki: najpierw katalog bieżący, potem ${ROOT}.
+
+Format pliku testów (dwa warianty):
+1) Tablica:
+[
+  { "scenario": 3205, "server": "optima-diehl", "description": "opcjonalny opis", "repeat": 2, "time": 8 },
+  ...
+]
+2) Obiekt z kluczem "tests":
+{ "tests": [ { ...jak wyżej... } ] }
+
+Pola wpisu:
+  scenario    (wymagane) numer scenariusza
+  server      (wymagane) wartość dataSource.databaseName
+  description (opcjonalne) opis testu; trafi do pliku wynikowego
+  repeat      (opcjonalne) ile razy powtórzyć dany test, domyślnie 1
+  time        (opcjonalne) wartość do main.maxTime i main.roundLength, domyślnie 8
+EOF
+        return 0
+        ;;
+    esac
+  done
+
   local TEST_FILE_RAW="${1:-}"
   local TEST_FILE=""
-
   if [ -n "$TEST_FILE_RAW" ]; then
     if [ -r "$TEST_FILE_RAW" ]; then TEST_FILE="$CWD/$TEST_FILE_RAW"
     elif [ -r "./$TEST_FILE_RAW" ]; then TEST_FILE="$CWD/$TEST_FILE_RAW"
@@ -413,32 +452,39 @@ optima_test() {
   ( PYTHONUNBUFFERED=1 "$VPY" "$WPY" --delay-hour 0 --uber-logs off --tests-save-file "$OUT_TXT" --tests-extra-file "$EXTRA_FILE" --no-open 2>&1 | sed -u 's/^/[watcher] /' ) & local wpid=$!; CHILD_PIDS+=("$wpid")
 
   for ((i=0;i<len;i++)); do
-    local SCEN DB DESC REPEAT
+    local SCEN DB DESC REPEAT TIMEV
     SCEN=$(jq -r 'if type=="array" then .[$i].scenario else .tests[$i].scenario end' --argjson i "$i" "$TEST_FILE")
     DB=$(jq -r 'if type=="array" then .[$i].server else .tests[$i].server end' --argjson i "$i" "$TEST_FILE")
     DESC=$(jq -r 'if type=="array" then (.[$i].description // "") else (.tests[$i].description // "") end' --argjson i "$i" "$TEST_FILE")
     REPEAT=$(jq -r 'if type=="array" then (.[$i].repeat // 1) else (.tests[$i].repeat // 1) end' --argjson i "$i" "$TEST_FILE")
+    TIMEV=$(jq -r 'if type=="array" then (.[$i].time // 8) else (.tests[$i].time // 8) end' --argjson i "$i" "$TEST_FILE")
 
     [[ "$SCEN" =~ ^[0-9]+$ ]] || { echo "Nieprawidłowy scenario w pozycji $i"; return 1; }
     [ -n "$DB" ] || { echo "Brak databaseName w pozycji $i"; return 1; }
     [[ "$REPEAT" =~ ^[0-9]+$ ]] || REPEAT=1
     [ "$REPEAT" -ge 1 ] || REPEAT=1
+    [[ "$TIMEV" =~ ^[0-9]+$ ]] || TIMEV=8
 
     if [ -n "$DESC" ] && [ "$DESC" != "null" ]; then
-      printf 'description=%s\n' "$(printf '%s' "$DESC" | tr '\n' ' ')" > "$EXTRA_FILE"
+      printf 'description=%s time=%s\n' "$(printf '%s' "$DESC" | tr '\n' ' ')" "$TIMEV" > "$EXTRA_FILE"
     else
-      : > "$EXTRA_FILE"
+      printf 'time=%s\n' "$TIMEV" > "$EXTRA_FILE"
     fi
 
-    jq --argjson s "$SCEN" --arg db "$DB" '.main.scenarioName=$s | .connectionPool["dataSource.databaseName"]=$db' "$BAK" > "$CFG.tmp" || return 1
+    jq --argjson s "$SCEN" --arg db "$DB" --argjson t "$TIMEV" \
+       '.main.scenarioName=$s
+        | .connectionPool["dataSource.databaseName"]=$db
+        | .main.maxTime=$t
+        | .main.roundLength=$t' \
+       "$BAK" > "$CFG.tmp" || return 1
     mv -f "$CFG.tmp" "$CFG" || return 1
 
     for ((r=1;r<=REPEAT;r++)); do
       : > "$LOG"
       if [ "$REPEAT" -gt 1 ]; then
-        echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB}) [powtórzenie ${r}/${REPEAT}]"
+        echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB}, time=${TIMEV}) [powtórzenie ${r}/${REPEAT}]"
       else
-        echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB})"
+        echo "==> Uruchamiam symulację ${SCEN} (databaseName=${DB}, time=${TIMEV})"
       fi
       [ -n "$DESC" ] && [ "$DESC" != "null" ] && echo "    Opis: $DESC"
 
@@ -476,3 +522,11 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 alias cdtest='cd /home/marchlak/simulations/test-simulations'
+
+
+open_urls() {
+  local src="${1:-/dev/stdin}"
+  grep -Eo 'https?://[^[:space:]]+' "$src" | sort -u | xargs -r -n1 xdg-open >/dev/null 2>&1
+}
+
+alias ol='open_urls'
