@@ -150,6 +150,23 @@ export AWS_PROFILE=optima-sim-scenarios
 cgpt() {
   local exts=() names=() extras=() args=() files=() ext name list=0
 
+  if [[ $# -eq 1 && ( "$1" == "--help" || "$1" == "-h" ) ]]; then
+    cat <<'EOF'
+Użycie:
+  cgpt [-l] [-e ext ...] [-n nazwa ...]
+  cgpt ext1 [ext2 ...]
+
+Opcje:
+  -e ext       dodaje rozszerzenie do listy
+  -n nazwa     dodaje nazwę pliku (wzorzec) do listy
+  -l           wypisuje nazwy plików na stderr
+  -h, --help   pokazuje tę pomoc
+
+Bez flag: cgpt ext1 [ext2 ...] traktuje argumenty jako rozszerzenia.
+EOF
+    return 0
+  fi
+
   if [[ $# -lt 1 ]]; then
     echo "Użycie: cgpt [-l] [-e ext ...] [-n nazwa ...] | bez flag: cgpt ext1 [ext2 ...]" >&2
     return 1
@@ -168,6 +185,22 @@ cgpt() {
       -l)
         list=1
         shift
+        ;;
+      --help|-h)
+        cat <<'EOF'
+Użycie:
+  cgpt [-l] [-e ext ...] [-n nazwa ...]
+  cgpt ext1 [ext2 ...]
+
+Opcje:
+  -e ext       dodaje rozszerzenie do listy
+  -n nazwa     dodaje nazwę pliku (wzorzec) do listy
+  -l           wypisuje nazwy plików na stderr
+  -h, --help   pokazuje tę pomoc
+
+Bez flag: cgpt ext1 [ext2 ...] traktuje argumenty jako rozszerzenia.
+EOF
+        return 0
         ;;
       *)
         extras+=("$1"); shift
@@ -525,6 +558,19 @@ alias cdtest='cd /home/marchlak/simulations/test-simulations'
 
 
 open_urls() {
+  if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    cat <<'EOF'
+Użycie: open_urls [PLIK]
+Czyta z podanego pliku (domyślnie stdin), wyciąga unikalne URL-e
+i otwiera każdy za pomocą xdg-open.
+
+Przykłady:
+  some_command | open_urls
+  open_urls links.txt
+EOF
+    return 0
+  fi
+
   local src="${1:-/dev/stdin}"
   grep -Eo 'https?://[^[:space:]]+' "$src" | sort -u | xargs -r -n1 xdg-open >/dev/null 2>&1
 }
