@@ -17,8 +17,8 @@ set $ws11 "11"
 exec_always --no-startup-id ~/.config/i3/config.d/scripts/monitors.sh
 
 set $disp1 eDP-1-2
-set $disp2 DP-1-1
-set $disp3 HDMI-0
+set $disp2 HDMI-0
+set $disp3 DP-1-1
 
 exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
 exec --no-startup-id xsettingsd
