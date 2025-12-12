@@ -162,6 +162,9 @@ Opcje:
   -l           wypisuje nazwy plików na stderr
   -h, --help   pokazuje tę pomoc
 
+Specjalne:
+  __noext__    wybiera pliki bez kropki w nazwie (bez rozszerzenia)
+
 Bez flag: cgpt ext1 [ext2 ...] traktuje argumenty jako rozszerzenia.
 EOF
     return 0
@@ -198,6 +201,9 @@ Opcje:
   -l           wypisuje nazwy plików na stderr
   -h, --help   pokazuje tę pomoc
 
+Specjalne:
+  __noext__    wybiera pliki bez kropki w nazwie (bez rozszerzenia)
+
 Bez flag: cgpt ext1 [ext2 ...] traktuje argumenty jako rozszerzenia.
 EOF
         return 0
@@ -218,7 +224,11 @@ EOF
   fi
 
   for ext in "${exts[@]}"; do
-    args+=( -name "*.$ext" -o )
+    if [[ "$ext" == "__noext__" ]]; then
+      args+=( -not -name "*.*" -o )
+    else
+      args+=( -name "*.$ext" -o )
+    fi
   done
   for name in "${names[@]}"; do
     args+=( -name "$name" -o )
@@ -391,23 +401,39 @@ Argumenty:
 Format pliku testów (dwa warianty):
 1) Tablica:
 [
-  { "scenario": 3205, "server": "optima-diehl", "description": "opcjonalny opis", "repeat": 2, "time": 8 },
+  {
+    "scenario": 3205,
+    "server": "optima-diehl",
+    "description": "opcjonalny opis",
+    "repeat": 2,
+    "time": 8
+  },
   ...
 ]
 2) Obiekt z kluczem "tests":
-{ "tests": [ { ...jak wyżej... } ] }
+{
+  "tests": [
+    { ...jak wyżej... }
+  ]
+}
 
 Pola wpisu:
   scenario    (wymagane) numer scenariusza
   server      (wymagane) wartość dataSource.databaseName
   description (opcjonalne) opis testu; trafi do pliku wynikowego
   repeat      (opcjonalne) ile razy powtórzyć dany test, domyślnie 1
-  time        (opcjonalne) wartość do main.maxTime i main.roundLength, domyślnie 8
+  time        (opcjonalne) wartość dla main.maxTime oraz main.roundLength (w godzinach, domyślnie 8)
+
+W pliku wynikowym:
+  każda linia z linkiem ma: scenario, simulation, description (jeśli jest),
+  simulation_time oraz exec_time=HH:MM:SS (ten sam dla całej sesji).
 EOF
         return 0
         ;;
     esac
   done
+
+  local START_TS; START_TS=$(date +%s)
 
   local TEST_FILE_RAW="${1:-}"
   local TEST_FILE=""
@@ -442,7 +468,12 @@ EOF
 
   local CHILD_PIDS=()
   restore_cfg() { cp -f "$BAK" "$CFG" >/dev/null 2>&1; }
-  cleanup_all() { local p; for p in "${CHILD_PIDS[@]}"; do kill -TERM "$p" 2>/dev/null; done; sleep 1; for p in "${CHILD_PIDS[@]}"; do kill -0 "$p" 2>/dev/null && kill -KILL "$p" 2>/dev/null; done; }
+  cleanup_all() {
+    local p
+    for p in "${CHILD_PIDS[@]}"; do kill -TERM "$p" 2>/dev/null; done
+    sleep 1
+    for p in "${CHILD_PIDS[@]}"; do kill -0 "$p" 2>/dev/null && kill -KILL "$p" 2>/dev/null; done
+  }
   on_exit() { cleanup_all; restore_cfg; }
   trap on_exit EXIT
   on_int() { echo; echo "Przerwano"; cleanup_all; restore_cfg; exit 130; }
@@ -499,9 +530,9 @@ EOF
     [[ "$TIMEV" =~ ^[0-9]+$ ]] || TIMEV=8
 
     if [ -n "$DESC" ] && [ "$DESC" != "null" ]; then
-      printf 'description=%s time=%s\n' "$(printf '%s' "$DESC" | tr '\n' ' ')" "$TIMEV" > "$EXTRA_FILE"
+      printf 'description=%s simulation_time=%s\n' "$(printf '%s' "$DESC" | tr '\n' ' ')" "$TIMEV" > "$EXTRA_FILE"
     else
-      printf 'time=%s\n' "$TIMEV" > "$EXTRA_FILE"
+      printf 'simulation_time=%s\n' "$TIMEV" > "$EXTRA_FILE"
     fi
 
     jq --argjson s "$SCEN" --arg db "$DB" --argjson t "$TIMEV" \
@@ -543,6 +574,33 @@ EOF
 
   kill "$wpid" 2>/dev/null; wait "$wpid" 2>/dev/null
   [ $had_m -eq 1 ] && set -m
+
+  local END_TS; END_TS=$(date +%s)
+  local DURATION=$((END_TS - START_TS))
+  [ "$DURATION" -lt 0 ] && DURATION=0
+  local H=$((DURATION / 3600))
+  local M=$(((DURATION % 3600) / 60))
+  local S=$((DURATION % 60))
+  local EXEC_HMS
+  printf -v EXEC_HMS '%02d:%02d:%02d' "$H" "$M" "$S"
+
+  # dopisz exec_time=HH:MM:SS do każdej linii zaczynającej się od "scenario="
+  local TMP; TMP=$(mktemp) || TMP=""
+  if [ -n "$TMP" ]; then
+    awk -v e="$EXEC_HMS" '
+      /^scenario=/ {
+        if ($0 ~ /exec_time=/) {
+          sub(/exec_time=[^ ]+/, "exec_time=" e)
+        } else {
+          $0 = $0 " exec_time=" e
+        }
+      }
+      { print }
+    ' "$OUT_TXT" > "$TMP" && mv "$TMP" "$OUT_TXT"
+  else
+    echo "exec_time=${EXEC_HMS}" >> "$OUT_TXT"
+  fi
+
   echo "Zapis: $OUT_TXT"
 }
 
@@ -576,3 +634,19 @@ EOF
 }
 
 alias ol='open_urls'
+
+gitssh() {
+  cat <<'EOF'
+SSH do GitHuba z obecnym ~/.ssh/config
+
+Repo OSOBISTE (Host github-personal):
+  git clone git@github-personal:USER/REPO.git
+  git remote add origin git@github-personal:USER/REPO.git
+  git remote set-url origin git@github-personal:USER/REPO.git
+
+Repo FIRMOWE (Host github-corp):
+  git clone git@github-corp:ORG/REPO.git
+  git remote add origin git@github-corp:ORG/REPO.git
+  git remote set-url origin git@github-corp:ORG/REPO.git
+EOF
+}
