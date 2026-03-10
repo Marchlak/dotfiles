@@ -28,20 +28,21 @@ local function get_workspace()
   return workspace_dir
 end
 
-local function java_keymaps()
+local function java_keymaps(bufnr)
+  local opts = { buffer = bufnr }
   vim.cmd("command! -buffer -nargs=? -complete=custom,v:lua.require'jdtls'._complete_compile JdtCompile lua require('jdtls').compile(<f-args>)")
   vim.cmd("command! -buffer JdtUpdateConfig lua require('jdtls').update_project_config()")
   vim.cmd("command! -buffer JdtBytecode lua require('jdtls').javap()")
   vim.cmd("command! -buffer JdtJshell lua require('jdtls').jshell()")
-  vim.keymap.set('n', '<leader>Jo', "<Cmd> lua require('jdtls').organize_imports()<CR>", { desc = "[J]ava [O]rganize Imports" })
-  vim.keymap.set('n', '<leader>Jv', "<Cmd> lua require('jdtls').extract_variable()<CR>", { desc = "[J]ava Extract [V]ariable" })
-  vim.keymap.set('v', '<leader>Jv', "<Esc><Cmd> lua require('jdtls').extract_variable(true)<CR>", { desc = "[J]ava Extract [V]ariable" })
-  vim.keymap.set('n', '<leader>JC', "<Cmd> lua require('jdtls').extract_constant()<CR>", { desc = "[J]ava Extract [C]onstant" })
-  vim.keymap.set('v', '<leader>JC', "<Esc><Cmd> lua require('jdtls').extract_constant(true)<CR>", { desc = "[J]ava Extract [C]onstant" })
-  vim.keymap.set('n', '<leader>Jt', "<Cmd> lua require('jdtls').test_nearest_method()<CR>", { desc = "[J]ava [T]est Method" })
-  vim.keymap.set('v', '<leader>Jt', "<Esc><Cmd> lua require('jdtls').test_nearest_method(true)<CR>", { desc = "[J]ava [T]est Method" })
-  vim.keymap.set('n', '<leader>JT', "<Cmd> lua require('jdtls').test_class()<CR>", { desc = "[J]ava [T]est Class" })
-  vim.keymap.set('n', '<leader>Ju', "<Cmd> JdtUpdateConfig<CR>", { desc = "[J]ava [U]pdate Config" })
+  vim.keymap.set("n", "<leader>jo", "<Cmd> lua require('jdtls').organize_imports()<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava [O]rganize Imports" }))
+  vim.keymap.set("n", "<leader>jv", "<Cmd> lua require('jdtls').extract_variable()<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava Extract [V]ariable" }))
+  vim.keymap.set("v", "<leader>jv", "<Esc><Cmd> lua require('jdtls').extract_variable(true)<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava Extract [V]ariable" }))
+  vim.keymap.set("n", "<leader>jx", "<Cmd> lua require('jdtls').extract_constant()<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava Extract Constant" }))
+  vim.keymap.set("v", "<leader>jx", "<Esc><Cmd> lua require('jdtls').extract_constant(true)<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava Extract Constant" }))
+  vim.keymap.set("n", "<leader>jm", "<Cmd> lua require('jdtls').test_nearest_method()<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava Test [M]ethod" }))
+  vim.keymap.set("v", "<leader>jm", "<Esc><Cmd> lua require('jdtls').test_nearest_method(true)<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava Test [M]ethod" }))
+  vim.keymap.set("n", "<leader>jt", "<Cmd> lua require('jdtls').test_class()<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava [T]est Class" }))
+  vim.keymap.set("n", "<leader>ju", "<Cmd> JdtUpdateConfig<CR>", vim.tbl_extend("force", opts, { desc = "[J]ava [U]pdate Config" }))
 end
 
 local function setup_jdtls()
@@ -124,7 +125,7 @@ local function setup_jdtls()
     capabilities = capabilities,
     init_options = { bundles = bundles, extendedClientCapabilities = extendedClientCapabilities },
     on_attach = function(_, bufnr)
-      java_keymaps()
+      java_keymaps(bufnr)
       require("jdtls.dap").setup_dap()
       require("jdtls.dap").setup_dap_main_class_configs()
       require("jdtls.setup").add_commands()

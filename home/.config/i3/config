@@ -17,8 +17,8 @@ set $ws11 "11"
 exec_always --no-startup-id ~/.config/i3/config.d/scripts/monitors.sh
 
 set $disp1 eDP-1-2
-set $disp2 HDMI-0
-set $disp3 DP-1-1
+set $disp2 eDP-1-2
+set $disp3 eDP-1-2
 
 exec --no-startup-id /usr/lib/gnome-settings-daemon/gsd-xsettings
 exec --no-startup-id xsettingsd
@@ -41,8 +41,9 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
-bindsym $mod+Shift+x exec --no-startup-id bash ~/.config/i3/config.d/scripts/lock.sh
-exec --no-startup-id xautolock -time 10 -locker "~/.config/i3/config.d/scripts/lock.sh"
+bindsym $mod+Shift+x exec --no-startup-id ~/.local/bin/xsecurelock-mpv.sh
+exec_always --no-startup-id xset s 600 5
+exec_always --no-startup-id xss-lock -n /usr/lib/xsecurelock/dimmer -l -- ~/.local/bin/xsecurelock-mpv.sh
 
 exec_always --no-startup-id bash -lc 'sleep 1; ~/.config/i3/config.d/scripts/wallpaper.sh'
 

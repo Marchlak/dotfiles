@@ -26,7 +26,7 @@ return {
 					null_ls.builtins.formatting.black,
 				},
 			})
-			vim.keymap.set("n", "<leader>rc", vim.lsp.buf.format, {})
+			vim.keymap.set("n", "<leader>rc", vim.lsp.buf.format, { desc = "[R]eformat [C]ode" })
 		end,
 	},
 }

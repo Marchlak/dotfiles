@@ -650,3 +650,54 @@ Repo FIRMOWE (Host github-corp):
   git remote set-url origin git@github-corp:ORG/REPO.git
 EOF
 }
+
+mycmds() {
+  local -A d=(
+    [alert]='Powiadomienie desktop po komendzie (notify-send)'
+    [xcp]='Kopiuje stdin do schowka (xclip)'
+    [updis]='Uruchamia update-discord.sh'
+    [nbrc]='Otwiera ~/.bashrc w nvim'
+    [nvimi3]='Otwiera ~/.config/i3 w nvim'
+    [sbrc]='Source ~/.bashrc'
+    [cgit]='Kopiuje GITHUB_TOKEN do schowka'
+    [ls]='lsd (kolorowy ls)'
+    [lso]='Oryginalne ls'
+    [ll]='lsd -alF'
+    [la]='lsd -A'
+    [l]='lsd -CF'
+    [cd]='Zoxide: skok do katalogu (z)'
+    [fzfb]='fzf z podglądem (bat)'
+    [nvimf]='Wybór plików w fzf i otwarcie w nvim'
+    [wifilist]='Lista sieci Wi-Fi (nmcli)'
+    [wificon]='Połącz Wi-Fi: wificon SSID HASLO'
+    [yaz]='Yazi + cd do wybranego katalogu'
+    [cgpt]='Kopiuje do schowka zawartość plików wg rozszerzeń/nazw'
+    [runwatcher]='Wrapper na watcher.py + OPTIMA-uber.jar'
+    [filecount]='Zlicza pliki (~/Scripts/file_count.sh)'
+    [optima_uber]='Buduje OPTIMA-uberJar i przenosi JAR do katalogu bazowego'
+    [optimajar]='Alias na optima_uber'
+    [optima_run]='Buduje i uruchamia OPTIMA-uber.jar'
+    [optimarun]='Alias na optima_run'
+    [sensor_uber]='Buduje SensorFileGenerator-uberJar i przenosi JAR'
+    [sensorjar]='Alias na sensor_uber'
+    [sensor_run]='Buduje i uruchamia SensorFileGenerator'
+    [sensorrun]='Alias na sensor_run'
+    [watchlogs]='Tail uberjar.log + podgląd w bat'
+    [optima_test]='Batch testy z JSON + zapis linków'
+    [optima_tail]='Tail logs.log + podgląd w bat'
+    [cdtest]='cd do /home/marchlak/simulations/test-simulations'
+    [open_urls]='Wyciąga URL-e i otwiera je xdg-open'
+    [ol]='Alias na open_urls'
+    [gitssh]='Wypisuje instrukcje SSH dla github-personal/github-corp'
+  )
+
+  {
+    printf 'Komenda\tOpis\n'
+    printf '------\t----\n'
+    for k in "${!d[@]}"; do
+      printf '%s\t%s\n' "$k" "${d[$k]}"
+    done | sort -k1,1
+  } | column -ts $'\t'
+}
+
+alias komendy='mycmds'

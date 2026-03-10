@@ -1,6 +1,5 @@
 local servers = {
   "lua_ls",                -- Lua
-  "jdtls",                 -- Java
   "clangd",                -- C++
   "html",                  -- HTML
   "cssls",                 -- CSS
@@ -67,13 +66,13 @@ return {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
         callback = function(ev)
           local opts = { buffer = ev.buf }
-          vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration, opts)
-          vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, opts)
-          vim.keymap.set("n", "<leader>gi", vim.lsp.buf.implementation, opts)
-          vim.keymap.set("n", "<leader>gh", vim.lsp.buf.hover, opts)
-          vim.keymap.set({ "n", "v" }, "<leader>ga", vim.lsp.buf.code_action, opts)
-          vim.keymap.set("n", "<leader>cR", vim.lsp.buf.rename, { desc = "[C]ode [R]ename" })
-          vim.keymap.set("n", "<leader>cr", require("telescope.builtin").lsp_references, { desc = "[C]ode Goto [R]eferences" })
+          vim.keymap.set("n", "<leader>gy", vim.lsp.buf.declaration, vim.tbl_extend("force", opts, { desc = "LSP declaration" }))
+          vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition, vim.tbl_extend("force", opts, { desc = "LSP definition" }))
+          vim.keymap.set("n", "<leader>gi", vim.lsp.buf.implementation, vim.tbl_extend("force", opts, { desc = "LSP implementation" }))
+          vim.keymap.set("n", "<leader>gh", vim.lsp.buf.hover, vim.tbl_extend("force", opts, { desc = "LSP hover" }))
+          vim.keymap.set({ "n", "v" }, "<leader>ga", vim.lsp.buf.code_action, vim.tbl_extend("force", opts, { desc = "LSP code action" }))
+          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, vim.tbl_extend("force", opts, { desc = "[R]e[n]ame symbol" }))
+          vim.keymap.set("n", "<leader>gr", require("telescope.builtin").lsp_references, vim.tbl_extend("force", opts, { desc = "[G]oto [R]eferences" }))
         end,
       })
     end,
@@ -82,6 +81,10 @@ return {
     "mfussenegger/nvim-jdtls",
     dependencies = {
       "mfussenegger/nvim-dap",
-    }
+    },
+    ft = "java",
+    config = function()
+      require("config.jdtls").setup_jdtls()
+    end,
   },
 }
