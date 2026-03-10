@@ -659,3 +659,91 @@
 2026/01/12 (19:46:13) | DEBUG: Shared::init() : Initialized.
 2026/01/12 (19:46:13) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
 2026/01/12 (19:46:33) | INFO: Quitting! Runtime: 00:00:20
+
+2026/01/19 (09:04:38) | ===> btop++ v.1.3.0
+2026/01/19 (09:04:38) | INFO: Logger set to DEBUG
+2026/01/19 (09:04:38) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/01/19 (09:04:38) | INFO: Running on /dev/pts/0
+2026/01/19 (09:04:38) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/01/19 (09:04:38) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/01/19 (09:04:38) | DEBUG: Shared::init() : Initialized.
+2026/01/19 (09:04:38) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+2026/01/19 (10:17:15) | INFO: Quitting! Runtime: 01:12:37
+
+2026/01/23 (10:28:02) | ===> btop++ v.1.3.0
+2026/01/23 (10:28:02) | INFO: Logger set to DEBUG
+2026/01/23 (10:28:02) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/01/23 (10:28:02) | INFO: Running on /dev/pts/0
+2026/01/23 (10:28:02) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/01/23 (10:28:02) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/01/23 (10:28:02) | DEBUG: Shared::init() : Initialized.
+2026/01/23 (10:28:02) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+
+2026/01/24 (13:51:05) | ===> btop++ v.1.3.0
+2026/01/24 (13:51:05) | INFO: Logger set to DEBUG
+2026/01/24 (13:51:05) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/01/24 (13:51:05) | INFO: Running on /dev/pts/0
+2026/01/24 (13:51:05) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/01/24 (13:51:05) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/01/24 (13:51:05) | DEBUG: Shared::init() : Initialized.
+2026/01/24 (13:51:05) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+2026/01/24 (14:08:24) | INFO: Quitting! Runtime: 00:17:19
+
+2026/01/24 (17:31:25) | ===> btop++ v.1.3.0
+2026/01/24 (17:31:25) | INFO: Logger set to DEBUG
+2026/01/24 (17:31:25) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/01/24 (17:31:25) | INFO: Running on /dev/pts/0
+2026/01/24 (17:31:25) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/01/24 (17:31:26) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/01/24 (17:31:26) | DEBUG: Shared::init() : Initialized.
+2026/01/24 (17:31:26) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+2026/01/24 (17:31:36) | DEBUG: Writing new config file
+2026/01/24 (17:31:36) | INFO: Quitting! Runtime: 00:00:11
+
+2026/01/27 (12:05:26) | ===> btop++ v.1.3.0
+2026/01/27 (12:05:26) | INFO: Logger set to DEBUG
+2026/01/27 (12:05:26) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/01/27 (12:05:26) | INFO: Running on /dev/pts/0
+2026/01/27 (12:05:26) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/01/27 (12:05:26) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/01/27 (12:05:26) | DEBUG: Shared::init() : Initialized.
+2026/01/27 (12:05:26) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+2026/01/27 (12:05:38) | INFO: Quitting! Runtime: 00:00:12
+
+2026/02/08 (19:00:17) | ===> btop++ v.1.3.0
+2026/02/08 (19:00:17) | INFO: Logger set to DEBUG
+2026/02/08 (19:00:17) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/02/08 (19:00:17) | INFO: Running on /dev/pts/0
+2026/02/08 (19:00:17) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/02/08 (19:00:17) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/02/08 (19:00:17) | DEBUG: Shared::init() : Initialized.
+2026/02/08 (19:00:17) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+
+2026/02/11 (11:56:57) | ===> btop++ v.1.3.0
+2026/02/11 (11:56:57) | INFO: Logger set to DEBUG
+2026/02/11 (11:56:57) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/02/11 (11:56:57) | INFO: Running on /dev/pts/0
+2026/02/11 (11:56:57) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/02/11 (11:56:57) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/02/11 (11:56:57) | DEBUG: Shared::init() : Initialized.
+2026/02/11 (11:56:57) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+2026/02/11 (23:21:39) | INFO: Quitting! Runtime: 11:24:42
+
+2026/02/18 (00:22:34) | ===> btop++ v.1.3.0
+2026/02/18 (00:22:34) | INFO: Logger set to DEBUG
+2026/02/18 (00:22:34) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/02/18 (00:22:34) | INFO: Running on /dev/pts/3
+2026/02/18 (00:22:35) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/02/18 (00:22:35) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/02/18 (00:22:35) | DEBUG: Shared::init() : Initialized.
+2026/02/18 (00:22:35) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme
+2026/02/18 (00:22:39) | INFO: Quitting! Runtime: 00:00:05
+
+2026/02/18 (00:22:41) | ===> btop++ v.1.3.0
+2026/02/18 (00:22:41) | INFO: Logger set to DEBUG
+2026/02/18 (00:22:41) | DEBUG: Setting LC_ALL=en_US.UTF-8
+2026/02/18 (00:22:41) | INFO: Running on /dev/pts/3
+2026/02/18 (00:22:41) | WARNING: NVML: Failed to get maximum GPU power draw, defaulting to 225W: Not Supported
+2026/02/18 (00:22:41) | INFO: Failed to load librocm_smi64.so, AMD GPUs will not be detected: librocm_smi64.so.1.0: cannot open shared object file: No such file or directory
+2026/02/18 (00:22:41) | DEBUG: Shared::init() : Initialized.
+2026/02/18 (00:22:41) | DEBUG: Loading theme file: /home/marchlak/.config/btop/themes/catppuccin_mocha.theme

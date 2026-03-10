@@ -4,41 +4,25 @@ case $- in
       *) return;;
 esac
 
-# don't put duplicate lines or lines starting with space in the history.
+# --- History -----------------------------------------------------------------
 HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
+shopt -s histappend
 shopt -s checkwinsize
 
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
+# --- Helpers -----------------------------------------------------------------
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# set variable identifying the chroot you work in (used in the prompt below)
 if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
-
-
-
 PS1='\[\e[0;32m\]\u@\h\[\e[m\]:\[\e[0;34m\]\w\[\e[m\]\$ '
-
-# If this is an xterm set the title to user@host:dir
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -50,18 +34,11 @@ fi
 
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
+# --- Optional local aliases ---------------------------------------------------
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -71,14 +48,10 @@ if ! shopt -oq posix; then
 fi
 
 
-
-#NVM
+# --- Language / tools ---------------------------------------------------------
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export PATH="/usr/bin:$PATH"
-
 
 # >>> conda initialize >>>
 # !! Contents within this block are managed by 'conda init' !!
@@ -95,12 +68,8 @@ fi
 unset __conda_setup
 # <<< conda initialize <<<
 
-
-
 . "$HOME/.cargo/env"
-
 export EDITOR="nvim"
-
 function yaz() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
 	yazi "$@" --cwd-file="$tmp"
@@ -110,23 +79,19 @@ function yaz() {
 	rm -f -- "$tmp"
 }
 
-# if [ -z "$JAVA_HOME" ]; then
-#   JAVA_PATH=$(readlink -f "$(which java)")
-#   if [ -n "$JAVA_PATH" ]; then
-#     JAVA_HOME=$(dirname "$(dirname "$JAVA_PATH")")
-#     if [[ "$JAVA_HOME" == */jre ]]; then
-#       JAVA_HOME=${JAVA_HOME%/jre}
-#     fi
-#     export JAVA_HOME
-#   fi
-# fi
+# --- Environment --------------------------------------------------------------
+export PATH="/usr/bin:$HOME/.local/bin:$PATH"
+if command -v java >/dev/null 2>&1; then
+  JAVA_HOME=$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")
+  export JAVA_HOME
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+if [ -f ~/.env ]; then
+  export $(grep -v '^#' ~/.env | xargs)
+fi
+export AWS_PROFILE=optima-sim-scenarios
 
-
-
-
-export $(grep -v '^#' ~/.env | xargs)
-
-
+# --- Aliases -----------------------------------------------------------------
 alias xcp="xclip -selection clipboard"
 alias updis="bash /home/marchlak/Scripts/update-discord.sh"
 alias nbrc="nvim ~/.bashrc"
@@ -138,14 +103,12 @@ alias lso="ls"
 alias ll='lsd -alF'
 alias la='lsd -A'
 alias l='lsd -CF'
-alias cd='z'
 alias fzfb='fzf --preview "bat --color=always --style=numbers --line-range=:500 {}"'
 alias nvimf='nvim $(fzf -m --preview "bat --color=always --style=numbers --line-range=:500 {}")'
 alias wifilist='nmcli device wifi list'
 wificon() {
   nmcli device wifi connect "$1" password "$2"
 }
-export AWS_PROFILE=optima-sim-scenarios
 
 cgpt() {
   local exts=() names=() extras=() args=() files=() ext name list=0
@@ -254,9 +217,6 @@ EOF
 }
 
 
-export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
-export PATH=$JAVA_HOME/bin:$PATH
-
 runwatcher() {
     local delay=8
     local require_truncate=true
@@ -316,7 +276,6 @@ runwatcher() {
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 eval "$(starship init bash)"
-eval "$(zoxide init bash)"
 alias filecount="bash ~/Scripts/file_count.sh"
 
 optima_uber() {
@@ -605,7 +564,6 @@ EOF
 }
 
 alias optima_tail='tail -n0 -F /home/marchlak/DS360/OPTIMAALL/OPTIMA/logs.log | bat --paging=never -l log'
-export PATH="$HOME/.local/bin:$PATH"
 
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init bash)"
@@ -689,7 +647,112 @@ mycmds() {
     [open_urls]='Wyciąga URL-e i otwiera je xdg-open'
     [ol]='Alias na open_urls'
     [gitssh]='Wypisuje instrukcje SSH dla github-personal/github-corp'
+    [komendy]='Lista wszystkich aliasów i skrótów'
+    [aliasy]='Lista wszystkich aliasów i skrótów'
+    [optimapush]='Buduje i wysyła OPTIMA-uber.jar na VM'
+    [optima_status]='Status OPTIMA na VM (ssh)'
+    [optima_tmux]='Podgląd tmux na VM'
+    [optima_watch]='Watch statusu OPTIMA na VM'
   )
+  local -A usage=(
+    [alert]='alert'
+    [xcp]='xcp  # czyta stdin i kopiuje do schowka'
+    [updis]='updis'
+    [nbrc]='nbrc'
+    [nvimi3]='nvimi3'
+    [sbrc]='sbrc'
+    [cgit]='cgit'
+    [ls]='ls [opcje] [pliki]'
+    [lso]='lso [opcje] [pliki]'
+    [ll]='ll [opcje] [pliki]'
+    [la]='la [opcje] [pliki]'
+    [l]='l [opcje] [pliki]'
+    [cd]='cd [katalog]'
+    [fzfb]='fzfb'
+    [nvimf]='nvimf'
+    [wifilist]='wifilist'
+    [wificon]='wificon SSID HASLO'
+    [yaz]='yaz [argumenty]'
+    [cgpt]='cgpt [-l] [-e ext ...] [-n nazwa ...] | cgpt ext1 [ext2 ...]'
+    [runwatcher]='runwatcher [opcje] [--] [argumenty]'
+    [filecount]='filecount [argumenty]'
+    [optima_uber]='optima_uber'
+    [optimajar]='optimajar'
+    [optima_run]='optima_run [argumenty]'
+    [optimarun]='optimarun [argumenty]'
+    [sensor_uber]='sensor_uber'
+    [sensorjar]='sensorjar'
+    [sensor_run]='sensor_run'
+    [sensorrun]='sensorrun'
+    [watchlogs]='watchlogs'
+    [optima_test]='optima_test [PLIK_TESTOW]'
+    [optima_tail]='optima_tail'
+    [cdtest]='cdtest'
+    [open_urls]='open_urls [PLIK]'
+    [ol]='ol [PLIK]'
+    [gitssh]='gitssh'
+    [komendy]='komendy [komenda]'
+    [aliasy]='aliasy [komenda]'
+    [optimapush]='optimapush'
+    [optima_status]='optima_status'
+    [optima_tmux]='optima_tmux'
+    [optima_watch]='optima_watch'
+  )
+  local -A params=(
+    [alert]='Brak.'
+    [xcp]='Czyta stdin; brak flag.'
+    [updis]='Brak.'
+    [nbrc]='Brak.'
+    [nvimi3]='Brak.'
+    [sbrc]='Brak.'
+    [cgit]='Brak.'
+    [ls]='Opcje lsd.'
+    [lso]='Opcje ls.'
+    [ll]='Opcje lsd.'
+    [la]='Opcje lsd.'
+    [l]='Opcje lsd.'
+    [cd]='Argument jak w cd.'
+    [fzfb]='Brak; używa fzf z preview.'
+    [nvimf]='Brak; wybór wielu plików w fzf.'
+    [wifilist]='Brak.'
+    [wificon]='SSID HASLO.'
+    [yaz]='Argumenty przekazywane do yazi.'
+    [cgpt]='-e ext, -n nazwa, -l, -h/--help, __noext__.'
+    [runwatcher]='-d/--delay-hour, -t/--require-truncate, -N/--no-truncate, -n/--limit, -s/--save[=DIR], -ub, -h/--help, --.'
+    [filecount]='Argumenty przekazywane do skryptu.'
+    [optima_uber]='Brak.'
+    [optimajar]='Brak.'
+    [optima_run]='Argumenty przekazywane do java.'
+    [optimarun]='Argumenty przekazywane do java.'
+    [sensor_uber]='Brak.'
+    [sensorjar]='Brak.'
+    [sensor_run]='Brak.'
+    [sensorrun]='Brak.'
+    [watchlogs]='Brak.'
+    [optima_test]='PLIK_TESTOW.'
+    [optima_tail]='Brak.'
+    [cdtest]='Brak.'
+    [open_urls]='PLIK (domyslnie stdin).'
+    [ol]='PLIK (domyslnie stdin).'
+    [gitssh]='Brak.'
+    [komendy]='Opcjonalnie nazwa komendy.'
+    [aliasy]='Opcjonalnie nazwa komendy.'
+    [optimapush]='Brak.'
+    [optima_status]='Brak.'
+    [optima_tmux]='Brak.'
+    [optima_watch]='Brak.'
+  )
+
+  if [[ $# -ge 1 ]]; then
+    local k="$1"
+    if [[ -n "${d[$k]:-}" ]]; then
+      printf 'Komenda: %s\nOpis: %s\nUzycie: %s\nParametry: %s\n' \
+        "$k" "${d[$k]}" "${usage[$k]:-brak}" "${params[$k]:-brak}"
+      return 0
+    fi
+    echo "Nieznana komenda: $k"
+    return 1
+  fi
 
   {
     printf 'Komenda\tOpis\n'
@@ -701,3 +764,95 @@ mycmds() {
 }
 
 alias komendy='mycmds'
+alias aliasy='mycmds'
+
+optima_push() {
+  optima_uber || return 1
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  local JAR
+  JAR=$(ls -t "$BASE"/OPTIMA*.jar 2>/dev/null | head -n1) || return 1
+  local KEY="$HOME/.ssh/optima-sim.pem"
+  local REM="ubuntu@3.121.219.31"
+  ssh -i "$KEY" -o IdentitiesOnly=yes "$REM" 'mkdir -p ~/OPTIMA' || return 1
+  scp -i "$KEY" -o IdentitiesOnly=yes "$JAR" "$REM:~/OPTIMA/"
+}
+
+alias optimapush='optima_push'
+
+# OPTIMA VM shortcuts
+alias optima_status='ssh optima-sim "cd ~/OPTIMA && source venv/bin/activate && python3 optima_status.py"'
+alias optima_tmux='ssh -t optima-sim "tmux attach -t optima-java || tmux ls"'
+alias optima_watch='watch -n 5 '"'"'ssh optima-sim "~/OPTIMA/optima_status"'"'"''
+
+optima_vm() {
+  ssh -t optima-sim "cd ~/OPTIMA && source venv/bin/activate && ./optima_vm_test.py $*"
+}
+
+
+optima_vm_runner() {
+  local n="$1"; shift || true
+  if [[ -z "${n:-}" ]]; then
+    echo "Użycie: optima_vm_runner N [ARGUMENTY...]"
+    return 2
+  fi
+  ssh -t "optima-runner-${n}" "cd ~/OPTIMA && source venv/bin/activate && ./optima_vm_test.py $*"
+}
+
+optima_status_runner() {
+  local n="$1"; shift || true
+  if [[ -z "${n:-}" ]]; then
+    echo "Użycie: optima_status_runner N"
+    return 2
+  fi
+  ssh "optima-runner-${n}" "cd ~/OPTIMA && source venv/bin/activate && ./optima_status"
+}
+
+optima_vm_all() {
+  local i
+  for i in $(seq 1 20); do
+    echo "==> optima-runner-$i"
+    ssh "optima-runner-$i" "cd ~/OPTIMA && source venv/bin/activate && ./optima_vm_test.py $*"
+    echo
+  done
+}
+
+optima_status_all() {
+  local i
+  for i in $(seq 1 20); do
+    echo "==> optima-runner-$i"
+    ssh "optima-runner-$i" "cd ~/OPTIMA && source venv/bin/activate && python3 optima_status.py" || echo "ERROR on optima-runner-$i"
+    echo
+  done
+}
+
+optima_push_all() {
+  optima_uber || return 1
+  local BASE="/home/marchlak/DS360/OPTIMAALL/OPTIMA"
+  local JAR
+  JAR=$(ls -t "$BASE"/OPTIMA*.jar 2>/dev/null | head -n1) || return 1
+
+  local i host ok=0 fail=0
+  for i in $(seq 1 20); do
+    host="optima-runner-$i"
+    echo "==> $host"
+    ssh "$host" 'mkdir -p ~/OPTIMA' || { echo "ERROR mkdir on $host"; fail=$((fail+1)); echo; continue; }
+    scp "$JAR" "$host:~/OPTIMA/" || { echo "ERROR scp on $host"; fail=$((fail+1)); echo; continue; }
+    ok=$((ok+1))
+    echo
+  done
+
+  echo "DONE ok=$ok fail=$fail"
+  [ "$fail" -eq 0 ]
+}
+
+optima_reboot() {
+  local i host ok=0 fail=0
+  for i in $(seq 1 20); do
+    host="optima-runner-$i"
+    echo "==> $host"
+    ssh "$host" 'sudo reboot' && ok=$((ok+1)) || { echo "ERROR reboot on $host"; fail=$((fail+1)); }
+    echo
+  done
+  echo "DONE ok=$ok fail=$fail"
+  [ "$fail" -eq 0 ]
+}

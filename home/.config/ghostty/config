@@ -9,6 +9,7 @@ keybind = ctrl+shift+down=resize_split:down,10
 keybind = ctrl+shift+right=resize_split:right,10
 keybind = ctrl+shift+right_bracket=goto_split:next
 keybind = ctrl+shift+left_bracket=goto_split:previous
+shell-integration-features = ssh-terminfo,ssh-env
 
 clipboard-paste-protection = false
 custom-shader-animation = true
@@ -40,7 +41,7 @@ custom-shader-animation = always
 #cursor-color = "#FF00FF"
 cursor-invert-fg-bg = true
 
-#custom-shader = /home/marchlak/.config/ghostty/shadery-new/bettercrt.glsl
+custom-shader = /home/marchlak/.config/ghostty/shadery-new/bettercrt.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/bloom.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/blue-crt.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/cineShader-Lava.glsl
@@ -53,7 +54,7 @@ cursor-invert-fg-bg = true
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/glow-rgbsplit-twitchy.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/green-crt.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/in-game-crt.glsl
-custom-shader = /home/marchlak/.config/ghostty/shadery-new/just-snow.glsl
+#custom-shader = /home/marchlak/.config/ghostty/shadery-new/just-snow.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/matrix-hallway.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/mnoise.glsl
 #custom-shader = /home/marchlak/.config/ghostty/shadery-new/retro-terminal.glsl
