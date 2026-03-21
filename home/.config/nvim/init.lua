@@ -1,7 +1,6 @@
-require("config.keymaps")
-require("config.lazy")
-require("config.vim-options")
-
+require("core.options")
+require("core.keymaps")
+require("core.bootstrap")
 
 
 

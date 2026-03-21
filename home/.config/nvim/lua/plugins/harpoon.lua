@@ -1,7 +1,10 @@
-local plugin = { 
+-- Quick file navigation and bookmarking.
+local plugin = {
   "ThePrimeagen/harpoon",
   branch = "harpoon2",
-  requires = {{ "nvim-lua/plenary.nvim" }}
+  dependencies = {
+    { "nvim-lua/plenary.nvim" },
+  },
 }
 
 function plugin.config()

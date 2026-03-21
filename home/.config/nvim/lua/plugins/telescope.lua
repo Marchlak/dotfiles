@@ -1,3 +1,4 @@
+-- Fuzzy finding, grep, and picker UI.
 return {
   "nvim-telescope/telescope.nvim",
   tag = "0.1.6",
@@ -7,24 +8,35 @@ return {
   },
   config = function()
     local actions = require("telescope.actions")
+    local find_command
+
+    if vim.fn.executable("fd") == 1 then
+      find_command = { "fd", "--type", "f", "--hidden", "--follow", "--exclude", ".git" }
+    elseif vim.fn.executable("fdfind") == 1 then
+      find_command = { "fdfind", "--type", "f", "--hidden", "--follow", "--exclude", ".git" }
+    end
+
     require("telescope").setup({
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-n>"] = actions.cycle_history_next,
+            ["<C-p>"] = actions.cycle_history_prev,
+            ["<C-j>"] = actions.move_selection_next,
+            ["<C-k>"] = actions.move_selection_previous,
+          },
+        },
+      },
+      pickers = {
+        find_files = {
+          find_command = find_command,
+        },
+      },
       extensions = {
         ["ui-select"] = {
           require("telescope.themes").get_dropdown({}),
         },
       },
-    mappings = {
-      i = {
-        -- use <cltr> + n to go to the next option
-        ["<C-n>"] = actions.cycle_history_next,
-        -- use <cltr> + p to go to the previous option
-        ["<C-p>"] = actions.cycle_history_prev,
-        -- use <cltr> + j to go to the next preview
-        ["<C-j>"] = actions.move_selection_next,
-        -- use <cltr> + k to go to the previous preview
-        ["<C-k>"] = actions.move_selection_previous,
-      },
-    }
     })
 
     require("telescope").load_extension("ui-select")

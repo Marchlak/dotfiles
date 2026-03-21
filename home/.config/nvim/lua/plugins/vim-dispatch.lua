@@ -1,3 +1,4 @@
+-- Async command runner used here for browser-sync.
 return {
   "tpope/vim-dispatch",
   config = function ()

@@ -1,3 +1,4 @@
+-- Automatic bracket and quote pairing.
 return {
     "windwp/nvim-autopairs",
     event = { "InsertEnter" },

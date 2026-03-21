@@ -1,4 +1,4 @@
--- style
+-- Colorscheme and UI theme.
 local plugin = {
   "catppuccin/nvim",
   name = "catppuccin",

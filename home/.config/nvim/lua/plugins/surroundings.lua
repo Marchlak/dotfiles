@@ -1,3 +1,4 @@
+-- Add, change, and delete surrounding characters quickly.
 local plugin = {
     "kylechui/nvim-surround",
     version = "*",

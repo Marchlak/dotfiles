@@ -1,5 +1,7 @@
+-- Spring Boot helpers for project generation and execution.
 return {
     "elmcgill/springboot-nvim",
+    enabled = false,
     dependencies = {
         "neovim/nvim-lspconfig",
         "mfussenegger/nvim-jdtls"

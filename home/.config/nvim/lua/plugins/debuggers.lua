@@ -1,3 +1,4 @@
+-- Debug adapter protocol setup and UI.
 return {
     "mfussenegger/nvim-dap",
     dependencies = {

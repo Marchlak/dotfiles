@@ -1,3 +1,4 @@
+-- LSP, toolchain management, and language server keymaps.
 local servers = {
   "lua_ls",                -- Lua
   "clangd",                -- C++
@@ -33,34 +34,37 @@ return {
     config = function()
       require("mason-lspconfig").setup({
         ensure_installed = servers,
+        automatic_enable = false,
       })
     end,
   },
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspconfig = require("lspconfig")
       local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
-      require("mason-lspconfig").setup_handlers({
-        function(server)
-          lspconfig[server].setup({ capabilities = capabilities })
-        end,
-        ["pylsp"] = function()
-          lspconfig.pylsp.setup({
-            capabilities = capabilities,
-            settings = {
-              pylsp = {
-                plugins = {
-                  pycodestyle = {
-                    maxLineLength = 160,
-                  },
+      for _, server in ipairs(servers) do
+        local config = {
+          capabilities = capabilities,
+        }
+
+        if server == "pylsp" then
+          config.settings = {
+            pylsp = {
+              plugins = {
+                pycodestyle = {
+                  maxLineLength = 160,
                 },
               },
             },
-          })
-        end,
-      })
+          }
+        end
+
+        vim.lsp.config(server, config)
+        vim.lsp.enable(server)
+      end
+
+      require("lang.sqls").setup(capabilities)
 
       vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("UserLspConfig", {}),
@@ -84,7 +88,7 @@ return {
     },
     ft = "java",
     config = function()
-      require("config.jdtls").setup_jdtls()
+      require("lang.jdtls").setup()
     end,
   },
 }

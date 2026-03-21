@@ -1,7 +1,8 @@
+-- Syntax tree parsing, highlighting, and structural editing helpers.
 local plugin = {
 	"nvim-treesitter/nvim-treesitter",
 	build = ":TSUpdate",
-  dependecies = {
+  dependencies = {
     "windwp/nvim-ts-autotag"
   }
 }

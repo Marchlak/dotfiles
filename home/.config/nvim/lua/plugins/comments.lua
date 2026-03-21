@@ -1,3 +1,4 @@
+-- Fast line and block commenting.
 return {
   "terrortylor/nvim-comment",
   config = function()
