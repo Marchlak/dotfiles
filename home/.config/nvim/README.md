@@ -15,6 +15,7 @@ lua/lang      # cięższe konfiguracje language-specific, np. Java/JDTLS
 ### Zasady utrzymania
 
 - Globalne ustawienia trafiają do `lua/core/options.lua`.
+- Ustawienia diagnostyki trafiają do `lua/core/diagnostics.lua`.
 - Globalne skróty trafiają do `lua/core/keymaps.lua`.
 - Każdy plugin ma osobny plik w `lua/plugins`.
 - Skróty specyficzne dla pluginu trzymamy przy pluginie.
@@ -50,17 +51,14 @@ lua/lang      # cięższe konfiguracje language-specific, np. Java/JDTLS
 - `none-ls.nvim` + `mason-null-ls.nvim` + `none-ls-extras.nvim`: formatowanie i dodatkowe diagnostyki.
 - `nvim-treesitter`: parsowanie składni, highlight, indent i autotag.
 
-### Git i debug
+### Git i narzędzia dodatkowe
 
 - `gitsigns.nvim`: oznaczenia zmian w buforze.
-- `nvim-dap` + `nvim-dap-ui` + `nvim-nio`: debugowanie.
 - `vim-dispatch`: uruchamianie komend asynchronicznych.
 
-### Java i Spring
+### Java
 
 - `nvim-jdtls`: pełna integracja Java.
-- `mason-nvim-dap.nvim`: adaptery debuggera dla Java.
-- `springboot-nvim`: skróty do uruchamiania i generowania elementów Spring Boot.
 
 ## Cheatsheet skrótów
 
@@ -92,21 +90,23 @@ Leader to `Space`.
 
 - `<leader>e`: diagnostyka pod kursorem.
 - `<leader>q`: wrzuć diagnostykę do location list.
+- `<leader>nl`: otwórz location list z diagnostyką w dolnym oknie.
 - `<leader>nb`: następna diagnostyka.
+- `<leader>np`: poprzednia diagnostyka.
 - `<leader>gy`: deklaracja.
 - `<leader>gd`: definicja.
 - `<leader>gi`: implementacja.
-- `<leader>gh`: hover.
+- `<leader>gD`: type definition.
+- `<leader>kk`: hover / quick docs.
 - `<leader>ga`: code action.
 - `<leader>gr`: references.
+- `<leader>u`: usages do location list.
+- `<leader>p`: usages w pickerze Telescope.
+- `<leader>fs`: symbole w bieżącym pliku.
+- `<leader>fc`: symbole workspace.
 - `<leader>rn`: rename symbol.
+- `<leader>re`: rename symbol.
 - `<leader>rc`: formatuj kod.
-
-### Debug
-
-- `<leader>dt`: toggle breakpoint.
-- `<leader>ds`: start / continue debug session.
-- `<leader>dc`: zamknij UI debuggera.
 
 ### Harpoon
 
@@ -118,10 +118,6 @@ Leader to `Space`.
 
 ### Java i Spring
 
-- `<leader>jr`: uruchom Spring Boot.
-- `<leader>jc`: wygeneruj klasę.
-- `<leader>ji`: wygeneruj interfejs.
-- `<leader>je`: wygeneruj enum.
 - `<leader>jo`: organize imports.
 - `<leader>jv`: extract variable.
 - `<leader>jx`: extract constant.
@@ -132,6 +128,10 @@ Leader to `Space`.
 ### Inne
 
 - `<leader>bs`: uruchom `browser-sync`.
+- `<leader>gc`: komentuj / odkomentuj linię albo zaznaczenie.
+- `<leader>gl`: skocz do numeru linii.
+- `<leader>tt`, `<leader>tf`, `<leader>tc`, `<leader>tr`, `<leader>tp`: obsługa eksploratora plików.
+- `<leader>sh`, `<leader>sv`: szybkie splity.
 
 ## Języki i narzędzia
 
@@ -157,6 +157,8 @@ LSP instalowane przez Mason:
 - `cssls`
 - `tailwindcss`
 - `kotlin_language_server`
+- `gradle_ls`
+- `groovyls`
 - `lemminx`
 - `jsonls`
 - `bashls`
@@ -193,6 +195,7 @@ Uwagi:
 - Jeśli na Ubuntu dostajesz tylko binarkę `fdfind`, Telescope użyje jej automatycznie.
 - `lazy.nvim` ma wyłączone wsparcie `luarocks`, bo obecne pluginy go nie wymagają.
 - `LuaSnip` buduje `jsregexp`, żeby nie zgłaszać warningu o brakujących placeholder transformations.
+- Debugger i Spring Boot helpery są obecnie wyłączone, bo workflow jest ustawiony pod samo kodowanie, nawigację, completion i diagnostykę.
 
 ## Jak rozszerzać konfigurację
 

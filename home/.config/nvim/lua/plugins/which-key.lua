@@ -14,14 +14,15 @@ return {
     which_key.add({
       { "<leader>f", group = "Find" },
       { "<leader>g", group = "Goto / LSP" },
-      { "<leader>d", group = "Debug" },
       { "<leader>j", group = "Java" },
       { "<leader>w", group = "Window" },
       { "<leader>r", group = "Refactor / format" },
-      { "<leader>p", group = "Project / files" },
       { "<leader>n", group = "Diagnostics" },
       { "<leader>b", group = "Browser / build" },
       { "<leader>a", group = "Add / select" },
+      { "<leader>t", group = "Tree" },
+      { "<leader>s", group = "Split" },
+      { "<leader>k", group = "Docs" },
     })
   end,
 }

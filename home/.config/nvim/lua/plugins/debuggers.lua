@@ -1,6 +1,7 @@
 -- Debug adapter protocol setup and UI.
 return {
     "mfussenegger/nvim-dap",
+    enabled = false,
     dependencies = {
         -- ui plugins to make debugging simplier
         "rcarriga/nvim-dap-ui",

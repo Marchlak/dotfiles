@@ -1,7 +1,5 @@
 ## Konfiguracja neovima
 ## Języki w jakich programuje 
-- java
-- kotlin
 - python
 - javascript
 - typescript
