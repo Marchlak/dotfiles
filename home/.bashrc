@@ -849,3 +849,43 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
 nvm use default >/dev/null 2>&1
 export PATH="$HOME/go/bin:$PATH"
+degenerat() {
+    local shutdown_after=0
+    local url=""
+    local name=""
+    local outdir="/home/marchlak/Videos/nieobejrzane"
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -s)
+                shutdown_after=1
+                shift
+                ;;
+            *)
+                if [ -z "$url" ]; then
+                    url="$1"
+                elif [ -z "$name" ]; then
+                    name="$1"
+                else
+                    echo 'Użycie: degenerat [-s] "https://...m3u8" [nazwa.mp4]'
+                    return 1
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    [ -z "$url" ] && { echo 'Użycie: degenerat [-s] "https://...m3u8" [nazwa.mp4]'; return 1; }
+
+    name="${name:-film_$(date +%F_%H-%M-%S).mp4}"
+    mkdir -p "$outdir" || return 1
+
+    ffmpeg -protocol_whitelist "file,http,https,tcp,tls,crypto" -i "$url" -c copy -bsf:a aac_adtstoasc "$outdir/$name"
+    local status=$?
+
+    if [ "$status" -eq 0 ] && [ "$shutdown_after" -eq 1 ]; then
+        systemctl poweroff
+    fi
+
+    return "$status"
+}

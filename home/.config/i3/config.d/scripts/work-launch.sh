@@ -36,22 +36,16 @@ log "first_id: ${first_id:-<none>}"
 mapfile -t base2 < <(ghostty_ids)
 log "after first: ${base2[*]:-<none>}"
 
-i3-msg 'workspace number 8; exec --no-startup-id ghostty -e bash -ic '\''runwatcher -d 8 -n 1'\''' >/dev/null
+i3-msg 'workspace number 11; exec --no-startup-id ghostty -e bash -ic '\''runwatcher -d 11 -n 1'\''' >/dev/null
 log "launched ghostty #2 with runwatcher"
 second_id="$(find_new "${base2[@]:-}")"
 log "second_id: ${second_id:-<none>}"
-[[ -n "${second_id}" ]] && i3-msg "[con_id=${second_id}] mark ghostty2" >/dev/null && i3-msg "[con_id=${second_id}] move container to workspace number 8" >/dev/null
+[[ -n "${second_id}" ]] && i3-msg "[con_id=${second_id}] mark ghostty2" >/dev/null && i3-msg "[con_id=${second_id}] move container to workspace number 11" >/dev/null
 
 i3-msg 'workspace number 2; exec --no-startup-id brave-browser' >/dev/null
-i3-msg 'workspace number 3; exec --no-startup-id gtk-launch obsidian.desktop' >/dev/null
-i3-msg 'workspace number 4; exec --no-startup-id ticktick --no-sandbox --password-store=basic --user-data-dir=$HOME/.ticktick-profile' >/dev/null
+i3-msg 'workspace number 13; exec --no-startup-id gtk-launch obsidian.desktop' >/dev/null
+i3-msg 'workspace number 12; exec --no-startup-id ticktick --no-sandbox --password-store=basic --user-data-dir=$HOME/.ticktick-profile' >/dev/null
 i3-msg 'workspace number 5; exec --no-startup-id spotify' >/dev/null
 i3-msg 'workspace number 6; exec --no-startup-id ~/.local/share/JetBrains/Toolbox/apps/intellij-idea-ultimate/bin/idea' >/dev/null
 i3-msg 'workspace number 7; exec --no-startup-id gtk-launch pgadmin4.desktop' >/dev/null
 i3-msg 'workspace number 10; exec --no-startup-id slack' >/dev/null
-
-sleep 4
-
-i3-msg '[class="(?i)obsidian"] move container to workspace number 3' >/dev/null
-i3-msg '[class="(?i)ticktick"] move container to workspace number 4' >/dev/null
-i3-msg '[class="(?i)spotify"] move container to workspace

@@ -9,7 +9,6 @@ keybind = ctrl+shift+down=resize_split:down,10
 keybind = ctrl+shift+right=resize_split:right,10
 keybind = ctrl+shift+right_bracket=goto_split:next
 keybind = ctrl+shift+left_bracket=goto_split:previous
-shell-integration-features = ssh-terminfo,ssh-env
 
 clipboard-paste-protection = false
 custom-shader-animation = true
